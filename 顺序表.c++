@@ -38,3 +38,4 @@ bool ListDelete(SqList &L,int i,int &e)
     L.length--;
     return true;
 }
+
