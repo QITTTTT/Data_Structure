@@ -29,6 +29,7 @@ bool Push(SqStack &S,BiTNode* s){
     if(S.top>=MaxSize)
         return false;
     S.node[++S.top]=s;
+    return true;
 }
 bool GetTop(SqStack S,BiTNode* &x){
     if(S.top==-1)
@@ -72,7 +73,7 @@ bool PostOrder(BiTree T){
                 p=nullptr;
             }
         }
-    }
+    }return true;
 }
 
 //page 143/04
@@ -238,6 +239,7 @@ int find_k(BiTree T){
         return find_k(T->lchild);
         return find_k(T->rchild);}
     }
+    return 0;
 }
 
 //page 144/11
@@ -380,3 +382,54 @@ typedef struct ThreadNode/*线索二叉树的定义*/
     int ltag,rtag;
 }ThreadNode,*ThreadTree;
 
+//page 170/04
+typedef struct CSNode{
+    int data;
+    struct CSNode *firstchild,*nextsibling;
+}CSNode,*CSTree;
+
+int Leaves(CSTree T){
+    if(T==nullptr)
+        return 0;
+    if(T->firstchild==nullptr)
+        return 1+Leaves(T->nextsibling);
+    return Leaves(T->firstchild)+Leaves(T->nextsibling);
+}
+
+//page 170/05
+int heigh(CSTree T){
+    if(T==nullptr)
+        return 0;
+    int left=heigh(T->firstchild);
+    int right=heigh(T->nextsibling);
+    if(left<right)
+        return right+1;
+    else
+        return left+1;
+}
+
+//page 170/06
+CSTree createCSTree_degree(int e[],int degree[],int n){
+    //CSNode *pointer=new CSNode[10];
+    CSNode*pointer=(CSNode*)malloc(10*sizeof(CSNode));
+    int i,j,d,k=0;
+    for(i=0;i<n;i++){/*初始化*/
+        pointer[i].data=e[i];
+        pointer[i].firstchild=pointer[i].nextsibling=nullptr;
+    }
+    for(i=0;i<n;i++){
+        d=degree[i];
+        if(d)
+        {
+            k++;
+            pointer[i].firstchild=&pointer[k];
+            for(j=2;j<=d;j++){
+                k++;
+                pointer[k-1].nextsibling=&pointer[k];
+            }
+        }
+    }
+    CSTree T=&pointer[0];
+    return T;
+
+}
