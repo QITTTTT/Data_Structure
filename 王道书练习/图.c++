@@ -139,6 +139,44 @@ void DFS_non_recursion(ALGraph G,int v){
 */
 
 //TODO:211/04
+//TODO:深度优先遍历
 /*
+bool visited[MAX_VERTEX_NUM];
+bool DFS(Graph G,int v,int m){
+    bool my_bool=false;
+    if(v==w)
+        my_bool=true;
+    visited[v]=TURE;
+    for(w=FirstNeighbor(G,v);w>=0;w=NextNeighbor(G,v,w))
+        if(!visited[w]){
+            if(!my_bool)
+                my_bool=DFS(G,w,m);
+        }
+    return my_bool;
+}
+*/
 
+//TODO:广度优先遍历
+/*
+bool visited[MAX_VERTEX_NUM];
+bool BFS(ALGraph G,int v,int m){
+    bool my_bool=false;
+    if(v==m) my_bool=true;
+    visited[v]=true;
+    InitQueue(Q);
+    EnQueue(Q,v);
+    while(!IsEmpty(Q)){
+        DeQueue(Q,v);
+        for(int w=FirstNeighbor(G,v);w>=0;w=NextNeighbor(G,v,w)){
+           if(!visited[w])
+            {
+                if(w==m) 
+                    my_bool=true;
+                visited[w]=true;
+                EnQueue(Q,w);
+            }
+        }
+    }
+    return my_bool;
+}
 */
