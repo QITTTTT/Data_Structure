@@ -52,3 +52,46 @@ LNode* LSearch(LinkList &L,int x){
     }
     return p;
 }
+
+//TODO:277/06
+typedef struct BiTNode{
+    int data;
+    struct BiTNode*lchild,*rchild;
+}BiTNode,*BiTree;//二叉树的链式存储
+
+int BSTdata[100],k=0;
+void Inorder(BiTree T){
+    if(T!=nullptr){
+        Inorder(T->lchild);
+        BSTdata[k]=T->data;
+        k++;
+        Inorder(T->rchild);
+    }
+
+}
+
+bool Judge(BiTree T){
+    Inorder(T);
+    if(k!=0){
+        for(int i=0;i<k;i++){
+            if(BSTdata[i]>=BSTdata[i+1])    return false;
+        }
+    }else return false;
+    return true;
+}
+
+//TODO:277/07
+
+int level(BiTree T,int x){
+    if(T==nullptr){
+        exit (0);
+    }else{
+        if(x=T->data)
+            return 1;
+        else if(x<T->data)
+            return 1+level(T->lchild,x);
+            else return 1+level(T->rchild,x);
+    }
+}
+
+//TODO:277/08
