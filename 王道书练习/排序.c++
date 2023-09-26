@@ -43,3 +43,32 @@ void Sort(int A[],int n){
 //TODO:324/05:leetcode
 
 //TODO:344/06 荷兰国旗问题
+
+//TODO:335/04
+typedef struct LNode{
+    int data;
+    struct LNode* next;
+}LNode,*LinkList;
+
+void SelectSort(LinkList &L){
+    LNode *p=L,*q=L->next,*r=L,*s=nullptr,*m=nullptr;
+    while(r->next!=nullptr){
+        int min=q->data;
+        s=p;
+        while(q){
+            if(min>q->data){
+                min=q->data;
+                s=p;
+            }
+            q=q->next;
+            p=p->next;
+
+        }
+        m=s->next;
+        s->next=m->next;
+        m->next=r->next;
+        r->next=m;
+        r=m;q=r->next;
+    }
+}
+//TODO:335/05
