@@ -72,3 +72,14 @@ void SelectSort(LinkList &L){
     }
 }
 //TODO:335/05
+bool IsMinHeap(int A[],int len){
+    for(int i=len/2;i>=1;i--){
+        if(2*i<=len){
+            if(A[i]>A[2*i])  return false;
+        }
+        if(2*i+1<=len){
+            if(A[i]>A[2*i+1])   return false;
+        }
+    }
+    return true;
+}
