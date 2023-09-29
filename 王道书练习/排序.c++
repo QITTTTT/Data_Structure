@@ -83,3 +83,45 @@ bool IsMinHeap(int A[],int len){
     }
     return true;
 }
+//TODO:349/02
+void Merge(int *A,int m,int n){
+    int B[m+n+1];
+    for(int i=0;i<=m+n;i++)  B[i]=A[i];
+    int i,j,k;
+    for(i=1,j=m+1,k=1;i<=m&&j<=m+n&&k<=m+n+1;k++){
+        if(B[i]<B[j]){
+            A[k]=B[i];
+            i++;
+        }else{
+            A[k]=B[j];
+            j++;
+        }
+    }
+    while(i<=m) A[k++]=B[i++];
+    while(j<=m+n)   A[k++]=B[j++]; 
+}
+
+//TODO:350/03
+int* Countsorting(int A[],int n){
+    int B[n];
+    for(int i=0;i<n;i++){
+        int count=0;
+        for(int j=0;j<n;j++){
+            if(A[j]<A[i])   count++;
+        }
+        B[count]=A[i];
+    }
+    return B;
+}
+//TODO:350/04
+void Sort(int *A,int n){
+    A[0]=A[n];
+    int low=1,high=n;
+    while(low<high){
+        while(low<high&&A[low]<=A[0]) low++;
+        A[high]=A[low];
+        while(low<high&&A[high]<=A[0])    high--;
+        A[low]=A[high];
+    }
+    A[low]=A[0];
+}
