@@ -191,3 +191,130 @@ Status SAMEDELETE(LinkList &L){
     return OK;
 }
 //TODO:2.21
+Status SINVERSION(SqList &A){
+    for(int i=0,j=A.length-1;i<=A.length/2-1;i++,j--){
+        ElemType temp=A.elem[i];
+        A.elem[i]=A.elem[j];
+        A.elem[j]=temp;
+    }
+    return OK;
+}
+//TODO:2.22
+Status LINVERSION(LinkList &L){
+    if(L->next==nullptr||L->next->next==nullptr)    return OK;
+    LNode*p=L->next,*q=p->next,*r=q->next;
+    p->next=nullptr;
+    for(;r;p=q,q=r,r=r->next){
+        q->next=p;
+    }
+    q->next=p;
+    L->next=q;
+    return OK;
+}
+//TODO:2.23
+Status Merge(LinkList &A,LinkList &B,LinkList &C){
+    LNode*p=A->next,*q=B->next,*r=C;        //处理结点
+    LNode*pn=p->next,*qn=q->next;
+    while(p&&q){
+        r->next=p;r=r->next;
+        r->next=q;r=r->next;
+        p=pn;if(pn)pn=pn->next;
+        q=qn;if(qn)qn=qn->next;
+    }
+    if(q)    r->next=q;
+    if(p)    r->next=p;
+    A->next=nullptr;B->next=nullptr;
+    return OK;
+}
+
+//TODO:2.24
+Status InversionMerge(LinkList &A,LinkList &B,LinkList &C){
+    LNode*p=A->next,*q=B->next,*r=C;        //当前处理结点
+    LNode*pn=p->next,*qn=q->next;           //记录当前处理节点的后继结点
+    while(p&&q){                            //AB均有未处理结点
+        if(p->data<=q->data){
+            p->next=r->next;r->next=p;
+            p=pn;if(pn) pn=pn->next;
+        }else{
+            q->next=r->next;r->next=q;
+            q=qn;if(qn) qn=qn->next;
+        }
+         
+    }
+    while(p){
+            p->next=r->next;r->next=p;
+            p=pn;if(pn) pn=pn->next;
+        }
+    while(q){
+            q->next=r->next;r->next=q;
+            q=qn;if(qn) qn=qn->next;
+        }
+        A->next=nullptr;B->next=nullptr;  
+    return OK;
+}
+//TODO:2.25
+Status Intersection(LinkList &A,LinkList &B,LinkList &c){
+    return OK;
+}
+int main() {
+    // 创建链表A、B和C的头节点
+    LinkList A = (LinkList)malloc(sizeof(LNode));
+    A->next = NULL;
+
+    LinkList B = (LinkList)malloc(sizeof(LNode));
+    B->next = NULL;
+
+    LinkList C = (LinkList)malloc(sizeof(LNode));
+    C->next = NULL;
+
+    // 向链表A和B中插入一些数据（您可以根据需要修改这部分）
+    for (int i = 1; i <=5; i++) {
+        LNode* nodeA = (LNode*)malloc(sizeof(LNode));
+        nodeA->data =7- i;
+        nodeA->next = A->next;
+        A->next = nodeA;
+
+        
+    }
+    for (int i = 1; i <= 6; i++){
+        LNode* nodeB = (LNode*)malloc(sizeof(LNode));
+        nodeB->data = 8-i;
+        nodeB->next = B->next;
+        B->next = nodeB;
+        }
+    LNode* current1 = A->next;
+    while (current1) {
+        printf("%d ", current1->data);
+        current1 = current1->next;
+    }
+    printf("/n");
+    LNode* current2 = B->next;
+    while (current2) {
+        printf("%d ", current2->data);
+        current2 = current2->next;
+    }printf("/n");
+    // 合并链表A和B到链表C
+    InversionMerge(A, B, C);
+
+    // 打印合并后的链表C
+    LNode* current = C->next;
+    while (current) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+
+    // 释放链表C的内存
+    LNode* temp;
+    while (C->next) {
+        temp = C->next;
+        C->next = temp->next;
+        free(temp); // 使用 free 来释放节点内存
+    }
+
+    // 释放链表A、B和C的头节点内存
+    free(A);
+    free(B);
+    free(C);
+
+    return 0;
+}
