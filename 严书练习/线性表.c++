@@ -253,68 +253,75 @@ Status InversionMerge(LinkList &A,LinkList &B,LinkList &C){
     return OK;
 }
 //TODO:2.25
-Status Intersection(LinkList &A,LinkList &B,LinkList &c){
+Status Intersection(SqList A,SqList B,SqList &C){
+    int k=0;
+    for(int i=0,j=0;i<A.length&&j<B.length;){
+        if(A.elem[i]<B.elem[j]) i++;
+        else if(A.elem[i]>B.elem[j])    j++;
+            else {
+                if(C.length==C.listsize){
+                    ElemType *newbase=(ElemType*)realloc(C.elem,(C.listsize+LISTINCREMENT)*sizeof(ElemType));
+                    if(!newbase)    return OVERFLOW;
+                    C.elem=newbase;
+                    C.length+=LISTINCREMENT;
+                }    
+                C.elem[k]=A.elem[i];
+                i++;j++;k++;
+            }
+    }
+    return k;
+}
+//TODO:2.26
+Status INTERSECTION(LinkList A,LinkList B,LinkList C){
+    for(LNode*p=A->next,*q=B->next,*r=C;p&&q;){
+        if(p->data<q->data) p=p->next;
+        else if(p->data>q->data)    q=q->next;
+            else{
+                LNode *n=(LNode*)malloc(sizeof(LNode));
+                n->data=p->data;r->next=n;r=r->next;
+                p=p->next;q=q->next;
+            }
+    }
     return OK;
 }
-int main() {
-    // 创建链表A、B和C的头节点
-    LinkList A = (LinkList)malloc(sizeof(LNode));
-    A->next = NULL;
-
-    LinkList B = (LinkList)malloc(sizeof(LNode));
-    B->next = NULL;
-
-    LinkList C = (LinkList)malloc(sizeof(LNode));
-    C->next = NULL;
-
-    // 向链表A和B中插入一些数据（您可以根据需要修改这部分）
-    for (int i = 1; i <=5; i++) {
-        LNode* nodeA = (LNode*)malloc(sizeof(LNode));
-        nodeA->data =7- i;
-        nodeA->next = A->next;
-        A->next = nodeA;
-
-        
+//TODO:2.27
+Status Intersectionplus(SqList &A,SqList &B,SqList &C){
+    int c=-1;        //用于存放C的元素
+    for(int i=0,j=0;i<A.length&&j<B.length;){       //扫描A，B
+        if(A.elem[i]<B.elem[j]) i++;
+        else if(A.elem[i]>B.elem[j])    j++;
+            else {
+                if(c==-1)  A.elem[++c]=A.elem[i];
+                if(A.elem[i]!=A.elem[c]){
+                    A.elem[++c]=A.elem[i];
+                }
+                i++;j++;
+            }
     }
-    for (int i = 1; i <= 6; i++){
-        LNode* nodeB = (LNode*)malloc(sizeof(LNode));
-        nodeB->data = 8-i;
-        nodeB->next = B->next;
-        B->next = nodeB;
-        }
-    LNode* current1 = A->next;
-    while (current1) {
-        printf("%d ", current1->data);
-        current1 = current1->next;
+    C.elem=A.elem;C.length=++c;C.listsize=A.listsize;
+    return OK;
+}
+//TODO:2.28
+Status INTERSECTIONPLUS(LinkList &A,LinkList &B,LinkList &C){
+    int tag=0;LNode*r=A;
+    for(LNode*p=A->next,*q=B->next;p&&q;){
+        if(p->data<q->data) p=p->next;
+        else if(p->data>q->data)    q=q->next;
+            else{
+                if(tag==0){
+                    r=r->next;r->data=p->data;tag=1;
+                }else{
+                    if(r->data!=p->data){
+                        r=r->next;r->data=p->data;
+                    }
+                }
+                p=p->next;q=q->next;
+            }
     }
-    printf("/n");
-    LNode* current2 = B->next;
-    while (current2) {
-        printf("%d ", current2->data);
-        current2 = current2->next;
-    }printf("/n");
-    // 合并链表A和B到链表C
-    InversionMerge(A, B, C);
-
-    // 打印合并后的链表C
-    LNode* current = C->next;
-    while (current) {
-        printf("%d ", current->data);
-        current = current->next;
+    LNode*temp=r->next;r->next=nullptr;
+    while(temp){
+        r=temp;temp=temp->next;free(r);
     }
-
-    // 释放链表C的内存
-    LNode* temp;
-    while (C->next) {
-        temp = C->next;
-        C->next = temp->next;
-        free(temp); // 使用 free 来释放节点内存
-    }
-
-    // 释放链表A、B和C的头节点内存
-    free(A);
-    free(B);
-    free(C);
-
-    return 0;
+    C->next=A->next;free(A);A=r=nullptr;
+    return OK;
 }
