@@ -534,9 +534,12 @@ Status SUBTRUCT(SqPoly R,SqPoly Q,SqPoly &P){
             j++;
             k++;
         }else{
-            P.data[k].coef=R.data[i].coef-Q.data[j].coef;
-            P.data[k].exp=R.data[i].exp;
-            i++;j++;k++;
+            if(R.data[i].coef-Q.data[j].coef!=0){
+                P.data[k].coef=R.data[i].coef-Q.data[j].coef;
+                P.data[k].exp=R.data[i].exp;
+                k++;
+            }
+            i++;j++;
         } 
     }
     if(i<R.length){
