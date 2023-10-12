@@ -558,3 +558,56 @@ Status SUBTRUCT(SqPoly R,SqPoly Q,SqPoly &P){
     P.length=k;
     return OK;
 }
+//TODO:在2.41和2.42中，稀疏多项式采用的循环链表存储结构LinkedPoly定义
+typedef struct PolyNode{
+    PolyTerm data;
+    struct PolyNode *next;
+}PolyNode, *PolyLink;
+
+typedef  PolyLink  LinkedPoly;
+
+//TODO:2.41
+Status Derivation(LinkedPoly L){
+    PolyLink p=L->next,q=L;
+    while(p!=L){
+        if(p->data.exp==0){
+            q->next=p->next;
+            delete p;
+            p=q->next;
+        }else{
+            p->data.coef*=p->data.exp--;
+            q=p;p=p->next;
+        }
+    }
+    return OK;
+}
+
+//TODO:2.42
+Status DIVIDE(LinkedPoly L,LinkedPoly O,LinkedPoly E){
+    PolyLink p=L->next,q=p->next;
+    while(p!=L){
+        if(p->data.exp%2==0){
+            p->next=O->next;
+            O->next=p;
+        }else{
+            p->next=E->next;
+            E->next=p;
+        }
+        p=q;q=q->next;
+    }
+    return OK;
+}
+
+
+void printPoly(LinkedPoly L) {
+    PolyLink p = L->next;
+    while (p != L) {
+        std::cout << p->data.coef << "x^" << p->data.exp;
+        if (p->next != L) {
+            std::cout << " + ";
+        }
+        p = p->next;
+    }
+    std::cout << std::endl;
+}
+
