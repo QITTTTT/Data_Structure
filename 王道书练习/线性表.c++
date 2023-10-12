@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<iostream>
 #define MaxSize 10
 typedef struct
 {
@@ -8,7 +9,7 @@ typedef struct
     int length;
 }SqList;
 
-//page 017/1
+//TODO:page 017/1
 bool DeleteMinElem(SqList &L, int &e)
 {
     if(L.length==0) 
@@ -26,7 +27,7 @@ bool DeleteMinElem(SqList &L, int &e)
     return true;
 }
 
-//page 017/2
+//TODO:page 017/2
 bool Reverse(SqList L){
     if(L.length==0)
     return false;
@@ -39,7 +40,7 @@ bool Reverse(SqList L){
     return true;
 }
 
-//page 017/7
+//TODO:page 017/7
 bool Merge(SqList L1,SqList L2, SqList &L){
     if(L1.length+L2.length>L.LMaxSize)
     return false;
@@ -65,7 +66,7 @@ bool Merge(SqList L1,SqList L2, SqList &L){
     return true;
 }
 
-//page 017/8
+//TODO:page 017/8
 bool Reverse(int A[],int left,int right,int arraysize)
 {
     if(left>right||right>arraysize)
@@ -89,7 +90,7 @@ bool Exchange(int A[],int m,int n)
 
 }
 
-//page 017/9
+//TODO:page 017/9
 void Do(SqList &L,int x){
     int k;
     for(int i=0;i<L.length;i++)
@@ -112,7 +113,7 @@ void Do(SqList &L,int x){
     L.data[L.length]=x;
 }
 
-//page 017/10
+//TODO:page 017/10
 void Reverse(int R[],int start,int ending)
 {
     int temp;
@@ -132,7 +133,7 @@ void Converse(int R[],int n,int p)
 
 }
 
-//page 017/11
+//TODO:page 017/11
 int MidSearch(int A[],int B[],int n)
 {
     int s1=0,d1=n-1,m1,s2=0,d2=n-1,m2;
@@ -166,8 +167,35 @@ int MidSearch(int A[],int B[],int n)
     }
     return A[s1]<B[s2]? A[s1]:B[s2];
 }
+//TODO:page 017/12
+int MAINELEM(int A[],int n){
+    int B[n];int max=0;
+    for(int i=0;i<n;i++)    B[i]=0;
+    for(int i=0;i<n;i++){
+        B[A[i]]++;
+    }
+    for(int i=0;i<n;i++){
+        if(B[i]>B[max]){
+            max=i;
+        }
+    }
+    if(B[max]>n/2)  return max;
+    else return 0;
+}
+//TODO:page 018/13
+int Unexistentelem(int A[], int n){
+    int B[n];int elem;
+    for(int i=0;i<n;i++)    B[i]=0;
+    for(int i=0;i<n;i++){
+        B[A[i]]=1;
+    }
+    for(elem=0;elem<n&&B[elem]!=0;elem++){}
+    return elem;
+}
+//TODO:page 018/14
+/*每次让最小的元素所在数组下标加一*/
 
-//page 038/01
+//TODO:page 038/01
 typedef struct LNode{
     int data;
     struct LNode* next;
@@ -190,10 +218,10 @@ bool Delete_x(LinkList &L,int x){
             free(i);
         }
     }
-
+    return true;
 }
 
-//page 038/02
+//TODO:page 038/02
 bool delete_x(LinkList &L,int x){
     if(L->next==nullptr){
         return false;
@@ -206,8 +234,9 @@ bool delete_x(LinkList &L,int x){
             free(k);
         }
     }
+    return true;
 }
-//page 038/03
+//TODO:page 038/03
 void Output(LinkList L){
     LNode* P=L->next;
     while(P!=nullptr){
@@ -216,7 +245,7 @@ void Output(LinkList L){
     }
     
 }
-//page 038/04
+//TODO:page 038/04
 void Delete_Min(LinkList L){
     //找到最小值结点
     LNode *p=L->next->next;
@@ -238,7 +267,7 @@ void Delete_Min(LinkList L){
     free(temp);
 }
 
-//page 038/05
+//TODO:page 038/05
 
 // 解法1：
 void Reverse_1(LinkList L){
@@ -269,9 +298,9 @@ LinkList Reverse_2(LinkList L){
     L->next=p;
     return L;
 }
-//page 038/06
+//TODO:page 038/06
 
-//page 038/07
+//TODO:page 038/07
 LinkList Delete(LinkList &L,int m,int n){
     if(m>=n)
     return nullptr;
@@ -290,8 +319,9 @@ LinkList Delete(LinkList &L,int m,int n){
             q=q->next;
         }
     }
+    return p;
 }
-//page 038/8
+//TODO:page 038/8
 LinkList Search_1st_Commom(LinkList L1,LinkList L2){
     int Length1=0,Length2=0;
     LNode *p=L1,*q=L2;
@@ -332,7 +362,7 @@ LinkList Search_1st_Commom(LinkList L1,LinkList L2){
 return p;
 }
 
-//page 038/10
+//TODO:page 038/10
 LinkList Seperate(LinkList &A)
 {
     int count=0;
@@ -361,7 +391,7 @@ LinkList Seperate(LinkList &A)
     return B;
 }
 
-//page 38/11
+//TODO:page 38/11
 LinkList Divide(LinkList &A){
     if(A->next==nullptr)
     return nullptr;
@@ -385,7 +415,7 @@ LinkList Divide(LinkList &A){
     return B;
 }
 
-//page 38/12
+//TODO:page 38/12
 bool Del_same(LinkList &L)
 {
     if(L->next==nullptr)
@@ -405,9 +435,10 @@ bool Del_same(LinkList &L)
             q=p->next;
         }
     }
+    return true;
 }
 
-//page 039/13
+//TODO:page 039/13
 void MergeList(LinkList &La,LinkList &Lb)
 {
     LNode *r,*pa=La->next,*pb=Lb->next;
@@ -440,7 +471,7 @@ void MergeList(LinkList &La,LinkList &Lb)
     Lb=nullptr;
 }
 
-//page 39/14
+//TODO:page 39/14
 LinkList Get_Common(LinkList A,LinkList B)
 {
     LinkList C=(LinkList)malloc(sizeof(LNode));
@@ -464,7 +495,7 @@ LinkList Get_Common(LinkList A,LinkList B)
     }
     return C;
 }
-//page 39/15
+//TODO:page 39/15
 bool Get_common(LinkList &A,LinkList &B)
 {
     if(A==nullptr&&B==nullptr)
@@ -510,7 +541,7 @@ bool Get_common(LinkList &A,LinkList &B)
 
     return true;
 }
-//page 039/17
+//TODO:page 039/17
 typedef struct DNode{
     int data;
     struct DNode *prior,*next;
@@ -531,4 +562,4 @@ bool symmetry(DLinkList L)
     }
     return 1;
 }
-//page 39/8
+//TODO:page 39/18

@@ -7,7 +7,7 @@ typedef struct LNode{
 }LNode,*LinkList;
 
 
-//page 67/03/2
+//TODO:page 67/03/2
 bool Judge(char A[]){
     int count=0;
     int i=0;
@@ -27,7 +27,7 @@ bool Judge(char A[]){
         return false;
 }
 
-//page 067/04
+//TODO:page 067/04
 bool judge(LinkList  L,int n)
 {
     int i;
@@ -50,7 +50,7 @@ bool judge(LinkList  L,int n)
     printf("%s","是中心对称");
     return true;
 }
-//page 67/05
+//TODO:page 67/05
 #define MaxSize 10
 
 typedef struct{
@@ -104,7 +104,7 @@ bool Pop(ShStack &S,int i,int &x)
     }
     return true;
 }
-//page 082/01
+//TODO:page 082/01
 typedef struct{
     int data[MaxSize];
     int front,rear;
@@ -142,7 +142,7 @@ bool DeQueue(SqQueue &Q,int &e)
     return true;
 }
     
-//page 092/01
+//TODO:page 092/01
 bool BracketCheck(char str[])
 {
     char a[MaxSize];
@@ -213,7 +213,7 @@ bool BracketCheck(char str[])
     printf("匹配");
 }
 
-//page 092/03
+//TODO:page 092/03
 double p(int n,double x)
 {
     struct stack{
@@ -238,5 +238,5 @@ double p(int n,double x)
         return val1; 
 }
 
-//page 093/04
+//TODO:page 093/04
 

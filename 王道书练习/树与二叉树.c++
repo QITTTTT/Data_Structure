@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #define MaxSize 100
-//page 143/03
+//TODO:page 143/03
 
 // TODO:定义二叉树
 typedef struct BiTNode{
@@ -76,7 +76,7 @@ bool PostOrder(BiTree T){
     }return true;
 }
 
-//page 143/04
+//TODO:page 143/04
 
 //队列的基本操作
 typedef struct LinkNode{
@@ -141,7 +141,7 @@ void LevelOrder(BiTree T)
     }
 }
 
-//page 143/05
+//TODO:page 143/05
 int BiTdepth(BiTree T){
     if(T==nullptr)
     {
@@ -170,7 +170,7 @@ int BiTdepth(BiTree T){
       return level;  
     }
 }
-//page 143/06
+//TODO:page 143/06
 BiTree build(int A[],int B[],int al,int ar,int bl,int br,int n){
     //al=bl=br=0;ar=n-1;
     if(n==0) return nullptr;
@@ -184,7 +184,7 @@ BiTree build(int A[],int B[],int al,int ar,int bl,int br,int n){
     T->rchild=build(A,B,br+1,n-1,br+1,n-1,n-1-br);
     return T;
 }
-//page 143/07
+//TODO:page 143/07
 bool IsComplete(BiTree T){
     LinkQueue Q;
     InitQueue(Q);
@@ -209,7 +209,7 @@ bool IsComplete(BiTree T){
     }
     return true;
 }
-//page 143/08
+//TODO:page 143/08
 int DsonNodes(BiTree T){
     if(T->lchild==nullptr&&T->rchild==nullptr)
         return 0;
@@ -219,7 +219,7 @@ int DsonNodes(BiTree T){
         return DsonNodes(T->lchild)+DsonNodes(T->rchild);
     
 }
-//page 144/9
+//TODO:page 144/9
 void Exchange(BiTree T){
     if(T){Exchange(T->lchild);
     Exchange(T->rchild);
@@ -227,7 +227,7 @@ void Exchange(BiTree T){
     T->lchild=T->rchild;
     T->rchild=p;}
 }
-//page 144/10
+//TODO:page 144/10
 int k;
 int find_k(BiTree T){
     if(T!=nullptr){
@@ -242,7 +242,7 @@ int find_k(BiTree T){
     return 0;
 }
 
-//page 144/11
+//TODO:page 144/11
 
 void Delete(BiTree &T)/*删除结点*/
 {
@@ -268,7 +268,7 @@ void Search_x0(BiTree T,int x)/*查找x值的结点并删除左右子树*/
         Search_x0(T->rchild,x);}
     }
 }
-//page 144/012
+//TODO:page 144/012
 void Search_x1(BiTree T,int x)/*查找x值并打印祖先*/
 {
     SqStack S;
@@ -310,9 +310,9 @@ void Search_x1(BiTree T,int x)/*查找x值并打印祖先*/
             }
 }
 
-//page 144/13 leetcode上
+//TODO:page 144/13 leetcode上
 
-//page 144/14
+//TODO:page 144/14
 typedef struct{
     BiTNode*data[100];
     int front,rear;
@@ -346,7 +346,7 @@ int BiTWidth(BiTree T){
     return maxwidth;
 }
 
-//page 144/15
+//TODO:page 144/15
 void postorder(int pre[],int l1,int r1,int post[],int l2,int r2){
     if(r1-l1==2)
         {
@@ -360,7 +360,7 @@ void postorder(int pre[],int l1,int r1,int post[],int l2,int r2){
     postorder(pre,l1+(r1-l1)/2+1,r1,post,l2+(r1-l1)/2,r2-1);
    } 
 }
-//page 144/17
+//TODO:page 144/17
 bool similar(BiTree T1,BiTree T2){
     if(T1==nullptr&&T2==nullptr)
         return true;
@@ -374,7 +374,7 @@ bool similar(BiTree T1,BiTree T2){
             return similar(T1->lchild,T2->lchild)&&similar(T1->rchild,T2->rchild);
         }
 }
-//page 144/18
+//TODO:page 144/18
 typedef struct ThreadNode/*线索二叉树的定义*/
 {
     int data;
@@ -382,7 +382,7 @@ typedef struct ThreadNode/*线索二叉树的定义*/
     int ltag,rtag;
 }ThreadNode,*ThreadTree;
 
-//page 170/04
+//TODO:page 170/04
 typedef struct CSNode{
     int data;
     struct CSNode *firstchild,*nextsibling;
@@ -396,7 +396,7 @@ int Leaves(CSTree T){
     return Leaves(T->firstchild)+Leaves(T->nextsibling);
 }
 
-//page 170/05
+//TODO:page 170/05
 int heigh(CSTree T){
     if(T==nullptr)
         return 0;
@@ -408,7 +408,7 @@ int heigh(CSTree T){
         return left+1;
 }
 
-//page 170/06
+//TODO:page 170/06
 CSTree createCSTree_degree(int e[],int degree[],int n){
     //CSNode *pointer=new CSNode[10];
     CSNode*pointer=(CSNode*)malloc(10*sizeof(CSNode));
