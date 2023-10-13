@@ -563,3 +563,8 @@ bool symmetry(DLinkList L)
     return 1;
 }
 //TODO:page 39/18
+void MERGE(LinkList h1,LinkList h2){
+    LNode*p=h1,*q=h2;
+    while(p->next!=h1)  p=p->next;
+    while(q->next!=h2)  q=q->next;
+}
