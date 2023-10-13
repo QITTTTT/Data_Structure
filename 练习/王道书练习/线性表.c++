@@ -567,4 +567,94 @@ void MERGE(LinkList h1,LinkList h2){
     LNode*p=h1,*q=h2;
     while(p->next!=h1)  p=p->next;
     while(q->next!=h2)  q=q->next;
+    p->next=h2;q->next=h1;
 }
+//TODO:page 39/19
+void DELETE_MIN(LinkList &L){
+    while(L->next!=L){
+        LNode*p=L->next,*q=L;LNode*r=p->next,*s=p;
+        while(r!=L){
+            if(r->data<p->data){
+                p=r;q=s;
+            }
+            r=r->next;s=s->next;
+        }
+        printf("%d",p->data);
+        q->next=p->next;free(p);
+    }
+    free(L);L=nullptr;
+}
+
+//TODO: page 39/20
+/*详见严书*/
+
+//TODO: page 39/21
+LNode* JUDGE(LinkList L){
+    LNode *p=L->next,*q=L->next->next;
+    while(p!=q){
+        if(q!=nullptr&&q->next!=nullptr){
+            p=p->next;
+            q=q->next->next;
+        }
+        if(q==nullptr||q->next==nullptr)  return nullptr;
+    }
+    LNode*r=L;
+    while(r!=p){
+        p=p->next;
+        r=r->next->next;
+    }
+    return r;
+}
+//TODO: page 39/22
+int SEARCH(LinkList L,int k){
+    int count=0;
+    LNode*p=L,*q=L;
+    while(count<k){
+        
+        count++;q=q->next;
+        if(q==nullptr)  return 0;
+    }
+    while(q!=nullptr){
+        p=p->next;
+        q=q->next;
+    }
+    printf("%d",p->data);
+    return 1;
+}
+//TODO: page 39/23
+/*原理同22*/
+
+//TODO: page 40/24
+/*辅助数组记录，原理同20*/
+
+//TODO: page 40/25
+void Sort(LinkList L){
+    //找到后半段元素的第一个结点
+    LNode*p=L,*q=L;
+    while(p!=nullptr&&p->next!=nullptr){
+        p=p->next->next;
+        q=q->next;
+    }//while 此时q->next为后半段元素的第一个结点
+    //逆置后半段元素
+    LNode*r=q->next;p=r->next;LNode*s=p->next;//p指向当前处理结点,r指向前驱结点,s指向后继结点
+    r->next=nullptr;q->next=nullptr;
+    while(p){
+        p->next=r;
+        r=p;p=s;
+        if(s)   s=s->next;
+    }//r指向an
+    //插入
+    p=L->next;q=r->next;
+    while(r){
+        r->next=p->next;
+        p->next=r;
+        p=r->next;
+        r=q;if(q)   q=q->next;
+    }
+}
+
+
+
+
+
+
