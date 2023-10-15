@@ -48,8 +48,8 @@
         "streambuf": "cpp",
         "typeinfo": "cpp"
     },
-    "C_Cpp.errorSquiggles": "disabled",
-    "gitdoc.enabled": true
+    "gitdoc.enabled": true,
+    "workbench.editor.enablePreview": false,
 
 }
 
