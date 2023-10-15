@@ -78,6 +78,17 @@ void conversion(){
     }
 }
 //TODO:括号匹配
-void BracketCheck(char *p []){
-    
+void BracketCheck(char *p [],int n){
+    SqStack S;
+    InitStack(S);
+    for(i=0;i<n;i++){
+        if(p[i]=='('||p[i]=='{'||'['){
+            Push()
+        }
+        switch (p[i])
+        {
+            case '(':
+        }
+    }
+
 }
