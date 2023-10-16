@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "Status.h"
 #include <limits.h>
+#include <cctype>
 #define STACK_INIT_SIZE 100 //存储空间初始分配量
 #define STACKINCREMENT 10 //存储空间分配增量
 
@@ -25,7 +26,7 @@ Status InitStack(SqStack &s) {
 }
 
 // 入栈操作
-Status Push(SqStack &s, SElemType &e) {
+Status Push(SqStack &s, SElemType e) {
     if (s.top - s.base >= s.stacksize) {
         // 栈满，追加存储空间
         SElemType *new_base = new SElemType[s.stacksize + STACKINCREMENT];
@@ -266,3 +267,128 @@ Status MazePath(MazeType Maze, PosType start, PosType end){
     return FALSE;
 }
 //TODO:表达式求值
+typedef struct{
+    int *base;
+    int *top;
+    int  stacksize;
+}SqStack0;
+
+// 初始化栈
+Status InitStack(SqStack0  &s) {
+    s.base = new int[STACK_INIT_SIZE];
+    if (!s.base) {
+        exit(EXIT_FAILURE);
+    }
+    s.top = s.base;
+    s.stacksize = STACK_INIT_SIZE;
+    return OK;
+}
+
+// 入栈操作
+Status Push(SqStack0 &s, int e) {
+    if (s.top - s.base >= s.stacksize) {
+        // 栈满，追加存储空间
+        int *new_base = new int[s.stacksize + STACKINCREMENT];
+        for (int i = 0; i < s.stacksize; i++) {
+            new_base[i] = s.base[i];
+        }
+        delete[] s.base;
+        s.base = new_base;
+        s.stacksize += STACKINCREMENT;
+        s.top = s.base + s.stacksize;
+    }
+    *s.top = e;
+    ++s.top;
+    return OK;
+}
+
+// 出栈操作
+Status Pop(SqStack0 &s, int &e) {
+    if (s.top == s.base) {
+        return ERROR;
+    }
+    --s.top;
+    e = *s.top;
+    return OK;
+}
+Status GetTop(SqStack0  s, int &e){
+    if(s.top==s.base)   return ERROR;
+    e=*(s.top-1);
+    return OK;
+}
+int EvaluateExpression(){
+    SqStack OPTR;SqStack0 OPND;char p;int answer;
+    InitStack(OPTR);    Push(OPTR,'#');GetTop(OPTR,p);
+    InitStack(OPND);    int c=getchar();
+    while(c!='#'||p!='#'){
+        if(isdigit(c)){
+            Push(OPND,c-'0');c=getchar();
+        }else{
+            switch(c){
+                case '+':
+                case '-':
+                    while(p!='('&&p!='#'){
+                        Pop(OPTR,p);
+                        int b,a;Pop(OPND,b);Pop(OPND,a);
+                        switch(p){
+                            case '+':   Push(OPND,a+b);break;
+                            case '-':   Push(OPND,a-b);break;
+                            case '*':   Push(OPND,a*b);break;
+                            case '/':   Push(OPND,a/b);break;
+                        }
+                        GetTop(OPTR,p);
+                    }
+                    Push(OPTR,c);GetTop(OPTR,p);c=getchar();
+                    break;
+                case '*':
+                case '/':
+                    while(p!='('&&p!='#'&&p!='+'&&p!='-'){
+                        Pop(OPTR,p);
+                        int b,a;Pop(OPND,b);Pop(OPND,a);
+                        switch(p){
+                            case '+':   Push(OPND,a+b);break;
+                            case '-':   Push(OPND,a-b);break;
+                            case '*':   Push(OPND,a*b);break;
+                            case '/':   Push(OPND,a/b);break;
+                        }
+                        GetTop(OPTR,p);
+                    }
+                    Push(OPTR,c);GetTop(OPTR,p);c=getchar();
+                    break;
+                case '(':
+                    Push(OPTR,c);GetTop(OPTR,p);c=getchar();
+                    break;
+                case ')':
+                    while(p!='('){
+                        Pop(OPTR,p);
+                        int b,a;Pop(OPND,b);Pop(OPND,a);
+                        switch(p){
+                            case '+':   Push(OPND,a+b);break;
+                            case '-':   Push(OPND,a-b);break;
+                            case '*':   Push(OPND,a*b);break;
+                            case '/':   Push(OPND,a/b);break;
+                        }
+                        GetTop(OPTR,p);
+                    }
+                    Pop(OPTR,p);GetTop(OPTR,p);c=getchar();
+                    break;
+                case '#':
+                    while(p!='#'){
+                        Pop(OPTR,p);
+                        int b,a;Pop(OPND,b);Pop(OPND,a);
+                        switch(p){
+                            case '+':   Push(OPND,a+b);break;
+                            case '-':   Push(OPND,a-b);break;
+                            case '*':   Push(OPND,a*b);break;
+                            case '/':   Push(OPND,a/b);break;
+                        }
+                        GetTop(OPTR,p);
+                    }
+            }
+        }
+    }
+
+    GetTop(OPND,answer);
+    return answer;
+}
+//
