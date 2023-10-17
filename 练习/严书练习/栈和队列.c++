@@ -84,7 +84,34 @@ void DestroyStack(SqStack &s) {
         s.stacksize = 0;
     }
 }
-
+//TODO:--单链队列--队列的链式存储结构
+typedef char QElemType;
+typedef struct QNode{
+    QElemType data;
+    struct QNode *next;
+}QNode,*QueuePtr;
+typedef struct{
+    QueuePtr front;
+    QueuePtr rear;
+}LinkQueue;
+//初始化
+Status InitQueue(LinkQueue &Q){
+    Q.front=Q.rear=(QueuePtr)malloc(sizeof(QNode));
+    if(!Q.front)    exit(OVERFLOW);
+    Q.front->next=nullptr;
+    return OK;
+}
+//销毁队列
+Status Destroy(LinkQueue &Q){
+    while(Q.front){
+        Q.rear=Q.front->next;
+        free(Q.front);
+        Q.front=Q.rear;
+    }
+    return OK;
+}
+//插入元素
+Status EnQueue(LinkQueue &Q)
 //TODO:数制转换
 void conversion(){
     int N;
@@ -391,4 +418,4 @@ int EvaluateExpression(){
     GetTop(OPND,answer);
     return answer;
 }
-//
+//TODO:离散事件模拟
