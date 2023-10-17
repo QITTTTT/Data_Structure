@@ -50,6 +50,7 @@
     },
     "gitdoc.enabled": true,
     "workbench.editor.enablePreview": false,
+    "C_Cpp.default.compilerPath": "f:\\msys2\\ucrt64\\bin\\gcc.exe",
 
 }
 
