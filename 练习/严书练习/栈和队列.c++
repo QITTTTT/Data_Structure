@@ -111,7 +111,9 @@ Status Destroy(LinkQueue &Q){
     return OK;
 }
 //插入元素
-Status EnQueue(LinkQueue &Q){}
+Status EnQueue(LinkQueue &Q){
+
+}
 //TODO:数制转换
 void conversion(){
     int N;
