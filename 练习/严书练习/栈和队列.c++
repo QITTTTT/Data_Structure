@@ -160,15 +160,15 @@ Status BracketCheck(char p[],int n){
             {
                 case ')':
                     if(e!='(') return FALSE;
-                    break; 
+                    break;
                 case '}':
                     if(e!='{') return FALSE;
-                    break; 
-                case ']':   
+                    break;
+                case ']':
                     if(e!='[') return FALSE;
-                    break;  
+                    break;
             }
-        } 
+        }
     }
     if(!StackEmpty(S))  return FALSE;
     return OK;
@@ -577,7 +577,7 @@ void Bank_Simulation(){
         if(en.NType==0) CustomerArrived();
         else CustomerDeparture();
     }
-    printf("The average time is %d",(float)TotalTime/CustomerNum);
+    printf("The average time is %f",(float)TotalTime/CustomerNum);
 }
 
 //***********************************************************
