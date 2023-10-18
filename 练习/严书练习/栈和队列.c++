@@ -579,9 +579,6 @@ void Bank_Simulation(){
     }
     printf("The average time is %d",(float)TotalTime/CustomerNum);
 }
-int main(){
-    printf("你好");
-    return 1;
-}
+
 //***********************************************************
 //***********************************************************
