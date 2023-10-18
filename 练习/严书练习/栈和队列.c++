@@ -111,8 +111,22 @@ Status Destroy(LinkQueue &Q){
     return OK;
 }
 //插入元素
-Status EnQueue(LinkQueue &Q){
-
+Status EnQueue(LinkQueue &Q,QElemType e){
+    QNode*p=(QueuePtr)malloc(sizeof(QNode));
+    if(!p)  return OVERFLOW;
+    p->data=e;p->next=nullptr;
+    Q.rear->next=p;Q.rear=p;
+    return OK;
+}
+//删除队头元素
+Status DeQueue(LinkQueue &Q,QElemType &e){
+    if(Q.front==Q.rear) return false;
+    QueuePtr p=Q.front->next;
+    Q.front->next=p->next;
+    if(p==Q.rear)   Q.rear=Q.front;
+    e=p->data;
+    free(p);
+    return OK;
 }
 //TODO:数制转换
 void conversion(){
@@ -420,4 +434,154 @@ int EvaluateExpression(){
     GetTop(OPND,answer);
     return answer;
 }
+//***************************************************************
+//***************************************************************
 //TODO:离散事件模拟
+//TODO:结构定义
+typedef struct {
+    int ArrivalTime;
+    int Duration;
+}LQElemType;
+typedef struct LQNode{
+    LQElemType data;
+    struct LQNode *next;
+}LQNode,*LQueuePtr;
+typedef struct{
+    LQueuePtr front;
+    LQueuePtr rear;
+    int length;
+}LLinkQueue;
+//初始化
+Status InitLQueue(LLinkQueue &Q){
+    Q.front=Q.rear=(LQueuePtr)malloc(sizeof(QNode));
+    if(!Q.front)    exit(OVERFLOW);
+    Q.front->next=nullptr;Q.length=0;
+    return OK;
+}
+//销毁队列
+Status LDestroy(LLinkQueue &Q){
+    while(Q.front){
+        Q.rear=Q.front->next;
+        free(Q.front);
+        Q.front=Q.rear;
+    }
+    return OK;
+}
+//插入元素
+Status EnLQueue(LLinkQueue &Q,LQElemType e){
+    LQNode*p=(LQueuePtr)malloc(sizeof(LQNode));
+    if(!p)  return OVERFLOW;
+    p->data=e;p->next=nullptr;
+    Q.rear->next=p;Q.rear=p;Q.length++;
+    return OK;
+}
+//删除队头元素
+Status DeLQueue(LLinkQueue &Q,LQElemType &e){
+    if(Q.front==Q.rear) return false;
+    LQueuePtr p=Q.front->next;
+    Q.front->next=p->next;
+    if(p==Q.rear)   Q.rear=Q.front;
+    e=p->data;
+    free(p);
+    Q.length--;
+    return OK;
+}
+Status GetHead(LLinkQueue &Q,LQElemType &e){
+    e=Q.front->next->data;
+    return OK;
+}
+typedef struct{
+    int OccurTime;
+    int NType;
+}Event,ElemType;
+
+typedef struct LNode{
+    ElemType data;
+    struct LNode *next;
+}LNode,*LinkList;
+
+typedef LinkList EventList;
+//变量
+EventList ev;
+Event en;
+LLinkQueue q[5];
+QElemType customer;
+int TotalTime,CustomerNum;
+int CloseTime=360;
+//TODO:函数
+int cmp(Event a,Event b){
+    if(a.OccurTime<b.OccurTime) return -1;
+    else if(a.OccurTime>b.OccurTime)    return 1;
+    else return 0;
+}
+Status OrderInsert(EventList ev,Event a,int (*cmp)(Event,Event)){
+    if(ev==nullptr) return ERROR;
+    LNode *p=ev;
+    while(p->next&&p->next->data.OccurTime<a.OccurTime) p=p->next;
+    LNode *n=(LNode*)malloc(sizeof(LNode));
+    n->data=a;n->next=p->next;p->next=n;
+    return OK;
+}
+Status InitList(LinkList &L)
+{
+    L=(LNode*)malloc(sizeof(LNode));
+    if(L==NULL)
+        return OVERFLOW;
+    L->next=NULL;
+    return OK;
+}
+void Random(int &durtime, int & intertime) {
+    durtime = rand() % 20 + 1;       // 办业务时间持续1到20分钟
+    intertime = rand() % 10 + 1;     // 下一个顾客到来的时间为间隔1到10分钟
+}
+int MLQueue(LLinkQueue e[]){
+    int min=1;
+    for(int i=2;i<5;i++){
+        if(e[min].length>e[i].length) min=i;
+    }
+    return min;
+}
+void OpenForDay(){
+    //初始化操作
+    TotalTime=0;CustomerNum=0;
+    InitList(ev);
+    for(int i=1;i<5;i++) InitLQueue(q[i]);
+    en.OccurTime=0;en.NType=0;
+    OrderInsert(ev,en,cmp);
+}
+void CustomerArrived(){
+    ++CustomerNum;
+    int durtime,intertime;
+    Random(durtime,intertime);
+    int t=en.OccurTime+intertime;
+    if(t<CloseTime) OrderInsert(ev,{t,0},cmp);
+    int i=MLQueue(q);
+    EnLQueue(q[i],{en.OccurTime,durtime});
+    if(q[i].length==1){
+        OrderInsert(ev,{en.OccurTime+durtime,i},cmp);
+    }
+}
+void CustomerDeparture(){
+    LQElemType  customer;
+    int i=en.NType;DeLQueue(q[i],customer);
+    TotalTime+=en.OccurTime-customer.ArrivalTime;
+    if(q[i].length==0){
+        GetHead(q[i],customer);
+        OrderInsert(ev,{en.OccurTime+customer.Duration,i},cmp);
+    }
+}
+void Bank_Simulation(){
+    OpenForDay();
+    while(ev->next){
+        en=ev->next->data;
+        if(en.NType==0) CustomerArrived();
+        else CustomerDeparture();
+    }
+    printf("The average time is %d",(float)TotalTime/CustomerNum);
+}
+int main(){
+    printf("你好");
+    return 1;
+}
+//***********************************************************
+//***********************************************************
