@@ -573,12 +573,12 @@ void CustomerDeparture(){
 }
 void Bank_Simulation(){
     OpenForDay();
-   /* while(ev->next){
+    while(ev->next){
         en=ev->next->data;
         if(en.NType==0) CustomerArrived();
         else CustomerDeparture();
         ev=ev->next;
-    }*/
+    }
     printf("The average time is %f",(float)TotalTime/CustomerNum);
 }
 int main(){
