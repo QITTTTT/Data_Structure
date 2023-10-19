@@ -576,6 +576,7 @@ void Bank_Simulation(){
         en=ev->next->data;
         if(en.NType==0) CustomerArrived();
         else CustomerDeparture();
+        ev=ev->next;
     }
     printf("The average time is %f",(float)TotalTime/CustomerNum);
 }
