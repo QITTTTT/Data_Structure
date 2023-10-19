@@ -515,7 +515,7 @@ int cmp(Event a,Event b){
     else if(a.OccurTime>b.OccurTime)    return 1;
     else return 0;
 }
-Status OrderInsert(EventList &ev,Event a,int (*cmp)(Event,Event)){
+Status OrderInsert(EventList ev,Event a,int (*cmp)(Event,Event)){
     if(ev==nullptr) return ERROR;
     LNode *p=ev;
     while(p->next&&p->next->data.OccurTime<a.OccurTime) p=p->next;
