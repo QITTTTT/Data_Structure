@@ -487,6 +487,7 @@ Status DeLQueue(LLinkQueue &Q,LQElemType &e){
     return OK;
 }
 Status GetHead(LLinkQueue &Q,LQElemType &e){
+    if(Q.front==Q.rear) return ERROR;
     e=Q.front->next->data;
     return OK;
 }
