@@ -507,7 +507,7 @@ Event en;
 LLinkQueue q[5];
 QElemType customer;
 int TotalTime,CustomerNum;
-int CloseTime=360;
+int CloseTime=0;
 //TODO:函数
 int cmp(Event a,Event b){
     if(a.OccurTime<b.OccurTime) return -1;
