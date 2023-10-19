@@ -128,6 +128,8 @@ Status DeQueue(LinkQueue &Q,QElemType &e){
     free(p);
     return OK;
 }
+//****************************************************************************************
+//****************************************************************************************
 //TODO:数制转换
 void conversion(){
     int N;
@@ -145,6 +147,9 @@ void conversion(){
         printf("%d",e);
     }
 }
+//****************************************************************************************
+//****************************************************************************************
+//****************************************************************************************
 //TODO:括号匹配
 Status BracketCheck(char p[],int n){
     SqStack S;
@@ -173,6 +178,9 @@ Status BracketCheck(char p[],int n){
     if(!StackEmpty(S))  return FALSE;
     return OK;
 }
+//****************************************************************************************
+//****************************************************************************************
+//****************************************************************************************
 //TODO: 行编辑程序
 void LineEdit(){
     SqStack S;
@@ -197,6 +205,9 @@ void LineEdit(){
     }
     DestroyStack(S);
 }
+//****************************************************************************************
+//****************************************************************************************
+//****************************************************************************************
 //TODO:迷宫问题
 typedef int PosType [2];//[0]为横坐标，[1]为纵坐标
 typedef int MazeType [10][10];
@@ -309,6 +320,9 @@ Status MazePath(MazeType Maze, PosType start, PosType end){
     }
     return FALSE;
 }
+//****************************************************************************************
+//****************************************************************************************
+//****************************************************************************************
 //TODO:表达式求值
 typedef struct{
     int *base;
@@ -434,8 +448,9 @@ int EvaluateExpression(){
     GetTop(OPND,answer);
     return answer;
 }
-//***************************************************************
-//***************************************************************
+//****************************************************************************************
+//******************************************************************************************
+//******************************************************************************************
 //TODO:离散事件模拟
 //TODO:结构定义
 typedef struct {
@@ -477,7 +492,7 @@ Status EnLQueue(LLinkQueue &Q,LQElemType e){
 }
 //删除队头元素
 Status DeLQueue(LLinkQueue &Q,LQElemType &e){
-    if(Q.front==Q.rear) return false;
+    if(Q.front==Q.rear) return ERROR;
     LQueuePtr p=Q.front->next;
     Q.front->next=p->next;
     if(p==Q.rear)   Q.rear=Q.front;
@@ -506,9 +521,9 @@ typedef LinkList EventList;
 EventList ev;
 Event en;
 LLinkQueue q[5];
-QElemType customer;
+LQElemType customer;
 int TotalTime,CustomerNum;
-int CloseTime=0;
+int CloseTime=460;
 //TODO:函数
 int cmp(Event a,Event b){
     if(a.OccurTime<b.OccurTime) return -1;
@@ -518,7 +533,7 @@ int cmp(Event a,Event b){
 Status OrderInsert(EventList ev,Event a,int (*cmp)(Event,Event)){
     if(ev==nullptr) return ERROR;
     LNode *p=ev;
-    while(p->next&&p->next->data.OccurTime<a.OccurTime) p=p->next;
+    while(p->next&&cmp(a,p->next->data)==1) p=p->next;
     LNode *n=(LNode*)malloc(sizeof(LNode));
     n->data=a;n->next=p->next;p->next=n;
     return OK;
@@ -544,7 +559,7 @@ int MLQueue(LLinkQueue e[]){
 }
 void OpenForDay(){
     //初始化操作
-    TotalTime=1;CustomerNum=1;
+    TotalTime=0;CustomerNum=0;
     InitList(ev);
     for(int i=1;i<5;i++) InitLQueue(q[i]);
     en.OccurTime=0;en.NType=0;
@@ -561,29 +576,32 @@ void CustomerArrived(){
     if(q[i].length==1){
         OrderInsert(ev,{en.OccurTime+durtime,i},cmp);
     }
+    
 }
-void CustomerDeparture(){
-    LQElemType  customer;
-    int i=en.NType;DeLQueue(q[i],customer);
-    TotalTime+=en.OccurTime-customer.ArrivalTime;
-    if(q[i].length==0){
-        GetHead(q[i],customer);
-        OrderInsert(ev,{en.OccurTime+customer.Duration,i},cmp);
+void CustomerDeparture() {
+    int i = en.NType;
+    if (DeLQueue(q[i], customer) == ERROR) return;
+    TotalTime += en.OccurTime - customer.ArrivalTime;
+    if (q[i].length != 0) {
+        GetHead(q[i], customer);
+        OrderInsert(ev,{ en.OccurTime + customer.Duration, i }, cmp);
     }
+
 }
 void Bank_Simulation(){
     OpenForDay();
-    while(ev->next){
-        en=ev->next->data;
+   while(ev->next){
+        en=ev->next->data;printf("发生时间%d,事件类型%d\n",en.OccurTime,en.NType);
         if(en.NType==0) CustomerArrived();
-        else CustomerDeparture();
+        else {CustomerDeparture();}
         ev=ev->next;
     }
-    printf("The average time is %f",(float)TotalTime/CustomerNum);
+    printf("The average time is %f\n",(float)TotalTime/CustomerNum);
 }
-int main(){
+int main() {
     Bank_Simulation();
     return 0;
 }
-//***********************************************************
-//***********************************************************
+//**************************************************************************************
+//**************************************************************************************
+//之后为课后算法设计题
