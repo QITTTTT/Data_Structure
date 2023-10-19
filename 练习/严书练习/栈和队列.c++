@@ -544,7 +544,7 @@ int MLQueue(LLinkQueue e[]){
 }
 void OpenForDay(){
     //初始化操作
-    TotalTime=0;CustomerNum=0;
+    TotalTime=1;CustomerNum=1;
     InitList(ev);
     for(int i=1;i<5;i++) InitLQueue(q[i]);
     en.OccurTime=0;en.NType=0;
@@ -573,12 +573,12 @@ void CustomerDeparture(){
 }
 void Bank_Simulation(){
     OpenForDay();
-    while(ev->next){
+   /* while(ev->next){
         en=ev->next->data;
         if(en.NType==0) CustomerArrived();
         else CustomerDeparture();
         ev=ev->next;
-    }
+    }*/
     printf("The average time is %f",(float)TotalTime/CustomerNum);
 }
 int main(){
