@@ -598,10 +598,41 @@ void Bank_Simulation(){
     }
     printf("The average time is %f\n",(float)TotalTime/CustomerNum);
 }
-int main() {
-    Bank_Simulation();
-    return 0;
-}
 //**************************************************************************************
 //**************************************************************************************
 //之后为课后算法设计题
+//TODO:3.15
+typedef struct tws{
+    int *base;
+    int top[2];
+    int TwsSize;
+}Tws;
+//初始化
+Status Initstack(Tws &S){
+    S.base=(int*)malloc(sizeof(int)*STACK_INIT_SIZE);
+    if(!S.base)   return OVERFLOW;
+    S.top[0]=-1;S.top[1]=STACK_INIT_SIZE;
+    S.TwsSize=STACK_INIT_SIZE;
+    return OK;
+}
+//入栈
+Status Push(Tws &S,int i,int e){
+    if(S.top[0]+1==S.top[1])    return OVERFLOW;
+    if(i==1)   S.base[--S.top[1]]=e;
+    else S.base[++S.top[0]]=e;
+    return OK; 
+}
+//出栈
+Status Pop(Tws &S,int i,int &e){
+    switch(i){
+        case 0:
+            if(S.top[0]==-1)    return ERROR;
+            else e=S.base[S.top[0]--];
+            break;
+        case 1:
+            if(S.top[1]=STACK_INIT_SIZE)    return ERROR;
+            else e=S.base[S.top[1]++];
+            break;
+    }
+    return OK;
+}
