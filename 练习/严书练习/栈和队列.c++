@@ -636,3 +636,163 @@ Status Pop(Tws &S,int i,int &e){
     }
     return OK;
 }
+//TODO:3.16
+void Dispatch(char A[],int n){
+    SqStack S;char temp;
+    InitStack(S);
+    for(int i=0;i<n;i++){
+        if(A[i]=='H'){
+            Push(S,A[i]);printf("S");
+        }else{
+            Push(S,A[i]);printf("S");
+            Pop(S,temp);printf("X");
+        }
+    }
+}
+//TODO:3.17
+void Check(char A[],int len){
+    int tag=1;
+    if(len%2==0)    tag=0;
+    else if(A[len/2]!='&')  tag=0;
+    else{
+        SqStack S;InitStack(S);char temp;
+        for(int i=0;i<len/2;i++)    Push(S,A[i]);
+        for(int i=len/2+1;i<len;i++){
+            Pop(S,temp);
+            if(temp==A[i]) ;
+            else tag=0;
+        }
+    }
+    if(tag==1)  printf("是模式字符序列");
+    else printf("不是模式字符序列");
+}
+//TODO:3.18&&3.19
+Status bracketcheck(char A[]){
+    SqStack S;InitStack(S);
+    int i=0;char e;
+    while(A[i]){
+        if(A[i]=='('||A[i]=='{'||A[i]=='[')
+            Push(S,A[i]);
+        else{
+            if(StackEmpty(S)){
+                printf("不匹配");
+                return ERROR;
+            }
+            switch(A[i]){
+                case ')':
+                    Pop(S,e);if(e!='(') {printf("不匹配");return ERROR;}break;
+                case '}':
+                    Pop(S,e);if(e!='{') {printf("不匹配");return ERROR;};break;
+                case ']':
+                    Pop(S,e);if(e!='[') {printf("不匹配");return ERROR;}break;
+            }        }
+        i++;
+    }
+    if(!StackEmpty(S)){
+        printf("不匹配");
+        return ERROR;
+    }
+    printf("匹配");return OK;
+    }
+//******************************************************************************************
+//*****************************************************************************************
+//TODO:3.20
+typedef int Graph [10][10];
+typedef int Coordinate [2];
+typedef struct{
+    Coordinate seat;
+    int di;
+}SGElemType;
+typedef struct{
+    SGElemType *base;
+    SGElemType *top;
+    int  stacksize;
+}GSqStack;
+void InitGStack(GSqStack &s) {
+    s.base = (SGElemType*)malloc( STACK_INIT_SIZE* sizeof(SGElemType));
+    if (!s.base) {
+        exit(EXIT_FAILURE); // 内存分配失败
+    }
+    s.top = s.base;
+    s.stacksize = STACK_INIT_SIZE;
+}
+Status Push(GSqStack &s, SGElemType e) {
+    if (s.top - s.base >= s.stacksize) {
+        // 栈满，追加存储空间
+        int new_size = s.stacksize * 2;
+        SGElemType *new_base = (SGElemType*)realloc(s.base, new_size * sizeof(SGElemType));
+        if (!new_base) {
+            exit(EXIT_FAILURE); // 内存分配失败
+        }
+        s.base = new_base;
+        s.top = s.base + s.stacksize;
+        s.stacksize = new_size;
+    }
+    *s.top = e;
+    ++s.top;
+    return OK;
+}
+Status Pop(GSqStack &s, SGElemType &e) {
+    if (s.top == s.base) {
+        return ERROR; // 栈空
+    }
+    --s.top;
+    e = *s.top;
+    return OK;
+}
+Status GetTop(GSqStack s, SGElemType &e) {
+    if (s.top == s.base) {
+        return ERROR; // 栈空
+    }
+    e = *(s.top - 1); // 获取栈顶元素，不弹出
+    return OK;
+}
+Status StackEmpty(GSqStack &s) {
+    if (s.top == s.base) return OK;
+    return FALSE;
+}
+void COLOR(Graph G,Coordinate x,int k){
+    GSqStack S;InitGStack(S);SGElemType e,next;
+    int colour=G[x[0]][x[1]];e.di=0;e.seat[0]=x[0];e.seat[1]=x[1];
+    G[e.seat[0]][e.seat[1]]=k;Push(S,e);
+    while(!StackEmpty(S)){
+        GetTop(S,e);
+        if(e.di<4){
+            switch(e.di){
+                case 0:
+                    next.seat[0]=e.seat[0];next.seat[1]=e.seat[1]-1;
+                    break;
+                case 1:
+                    next.seat[0]=e.seat[0]+1;next.seat[1]=e.seat[1];
+                    break;
+                case 2:
+                    next.seat[0]=e.seat[0];next.seat[1]=e.seat[1]+1;
+                    break;
+                case 3:
+                    next.seat[0]=e.seat[0]-1;next.seat[1]=e.seat[1];
+                    break;
+            }
+            if(next.seat[0]>=0&&next.seat[1]>=0){
+                if(G[next.seat[0]][next.seat[1]]==colour){
+                    (S.top-1)->di++;next.di=0;Push(S,next);G[next.seat[0]][next.seat[1]]=k;
+                }
+            }else (S.top-1)->di++;
+        }else{
+            Pop(S,e);
+        }
+    }
+}
+//***************************************************************************************************
+//***************************************************************************************************
+//TODO:3.21
+void Transform(char A[]){
+    SqStack S;InitStack(S);
+    int i=0;char p;
+    while(A[i]){
+        if(isdigit(A[i])){
+            printf("%c",A[i]);
+        }else{
+            Push(S,A[i]);
+        }
+    }
+}
