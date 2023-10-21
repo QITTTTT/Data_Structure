@@ -785,14 +785,143 @@ void COLOR(Graph G,Coordinate x,int k){
 //***************************************************************************************************
 //***************************************************************************************************
 //TODO:3.21
-void Transform(char A[]){
+Status Transform(char A[]){
     SqStack S;InitStack(S);
     int i=0;char p;
     while(A[i]){
         if(isdigit(A[i])){
             printf("%c",A[i]);
         }else{
-            Push(S,A[i]);
+            switch(A[i]){
+                case '(':
+                    Push(S,A[i]);
+                    break;
+                case '+':
+                case '-':
+                    GetTop(S,p);
+                    while(!StackEmpty(S)&&p!='('){
+                        Pop(S,p);printf("%c",p);GetTop(S,p);
+                    }
+                    Push(S,A[i]);
+                    break;
+                case '*':
+                case '/':
+                    GetTop(S,p);
+                    while(!StackEmpty(S)&&p!='('&&p!='-'&&p!='+'){
+                        Pop(S,p);printf("%c",p);GetTop(S,p);
+                    }
+                    Push(S,A[i]);
+                    break;
+                case ')':
+                    GetTop(S,p);
+                    while(p!='('){
+                        Pop(S,p);printf("%c",p);GetTop(S,p);
+                    }
+                    Pop(S,p);
+                    break;
+            }
         }
+        i++;
     }
+    while(!StackEmpty(S)){
+                Pop(S,p);printf("%c",p);
+            }
+    return OK;
 }
+//TODO:3.22
+void Postfix_calculate(char A[]){
+    SqStack0 S;InitStack(S);
+    int i=0;int x;int y;
+    while(A[i]){
+        if(isdigit(A[i])){
+            int x=A[i]-'0';
+            Push(S,x);
+        }else{
+            Pop(S,y);Pop(S,x);
+            switch(A[i]){
+                case '-':Push(S,x-y);break;
+                case '+':Push(S,x+y);break;
+                case '*':Push(S,x*y);break;
+                case '/':Push(S,x/y);break;
+            }
+        }
+        i++;
+    }
+    Pop(S,x);printf("%d",x);
+}
+
+//TODO:3.23
+/*
+需要一个元素为字符串的栈S(设置一个记录栈中元素的变量 S.len),逆波兰表达式存储在char A[];
+typedef char SElemType[100];
+Merge(SElemType P1,SElemType P2,char p) //合并子前缀表达式，结果"pP1P2"储存在P1中
+void Prefix_transform(char A[]){
+    StackS;InitStack (S);
+    int i=0;SElemType x;SElemType y;
+    while(A[i]){
+        if(isdigit(A[i])){
+            Push(S,A[i]);
+        }else{
+            if(S.len<2){
+                prinf("后缀表达式不正确");
+                return;
+            }
+            Pop(S,y);Pop(S,x);
+            Merge(x,y,A[i]);
+            Push(S,x);
+        }
+        i++;
+    }
+    if(S.len>1)
+    {
+        prinf("后缀表达式不正确");
+        return;
+    }
+    Pop(S,x);printf("前缀表达式为%s",x);
+}
+*/
+
+//TODO:3.24
+int g(int m,int n){
+    if(n<0||m<0) exit(ERROR);
+    if(m=0) return 0;
+    else return g(m-1,2*n)+n;
+}
+
+//TODO:3.25~递归
+int F(int n){
+    if(n<0) exit(ERROR);
+    if(n==0) return n+1;
+    else return n*F(n/2);
+}
+//TODO:3.25~非递归
+int F1(int n){
+    if(n<0) exit(ERROR);
+    int result=1;
+    while(n>0){
+        result*=n;n=n/2;
+    }
+    return result;
+}
+//TODO:3.26~递归
+double sqrt_recursion(double A,double p,double e){
+    if(A<0||p<0)    exit(ERROR);
+    if(abs(p*p-A)<e) return p;
+    else return(sqrt_recursion(A,(p+A/p)/2,e));
+}
+//TODO:3.26~非递归
+double sqrt_none_recursion(double A,double p,double e){
+    if(A<0||p<0)    exit(ERROR);
+    while(abs(p*p-A)>=e){
+        p=(p+A/p)/2;
+    }
+    return p;
+}
+//TODO:3.27~递归
+int Ackerman(int m,int n){
+    if(m==0)    return n+1;
+    else if(n==0) return Ackerman(m-1,1);
+    else return Ackerman(m-1,Ackerman(m,n-1));
+}
+//TODO:3.27~非递归
+/*不会*/
