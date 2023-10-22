@@ -978,4 +978,5 @@ Status DeQueue(XQueue &Q, int &e){
     if(h==Q.rear) {Q.rear=p;Q.rear->next=Q.rear;}
     else p->next=h->next;
     free(h);
+    return OK;
 }
