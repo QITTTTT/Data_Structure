@@ -973,7 +973,9 @@ Status EnXQueue(XQueue &Q,int e){
     return OK;
 }
 Status DeQueue(XQueue &Q, int &e){
-    XQNode *p=Q.rear->next;
+    XQNode *p=Q.rear->next;XQNode *h=p->next;
     if(p==Q.rear)   return ERROR;
-    
+    if(h==Q.rear) {Q.rear=p;Q.rear->next=Q.rear;}
+    else p->next=h->next;
+    free(h);
 }
