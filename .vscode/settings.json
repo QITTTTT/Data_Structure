@@ -51,7 +51,61 @@
     "gitdoc.enabled": true,
     "workbench.editor.enablePreview": false,
     "C_Cpp.default.compilerPath": "f:\\msys2\\ucrt64\\bin\\gcc.exe",
-
+  
+  "todo-tree.highlights.customHighlight": {
+    "BUG": {
+      "icon": "bug",
+      "foreground": "#F56C6C",
+      "type": "text"
+    },
+    "FIXME": {
+      "icon": "flame",
+      "foreground": "#FF9800",
+      "type": "tag-and-comment"
+    },
+    "TODO": {
+        "background": "#ffffff33",
+        "foreground": "#ffff25",
+        "type": "line",
+        "gutterIcon": true
+    },
+    "NOTE": {
+      "icon": "note",
+      "foreground": "#67C23A",
+      "type": "whole-line"
+    },
+    "INFO": {
+      "icon": "info",
+      "foreground": "#909399",
+      "type": "text-and-comment"
+    },
+    "TAG": {
+      "icon": "tag",
+      "foreground": "#409EFF",
+      "type": "line"
+    },
+    "HACK": {
+      "icon": "versions",
+      "foreground": "#E040FB",
+      "type": "line"
+    },
+    "XXX": {
+      "icon": "unverified",
+      "foreground": "#E91E63",
+      "type": "line"
+    }
+  },
+  "todo-tree.general.tags": [
+    "BUG",
+    "HACK",
+    "FIXME",
+    "TODO",
+    "INFO",
+    "NOTE",
+    "TAG",
+    "XXX"
+  ],
+  "todo-tree.general.statusBar": "total"
 }
 
 
