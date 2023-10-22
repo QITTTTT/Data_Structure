@@ -930,10 +930,14 @@ int Ackerman(int m,int n){
 2.如果有n=0，直接在栈顶进行操作 n+1 m-1
 3.m=0时，修改次顶元素的n和m
 终止条件为栈里只有一个元素且此元素的m等于0
-
 此题的栈里记录的是要算的函数，每次退栈都有m-1的操作：
-
-a(m-1,a(m,n-1))->{a(m,n-1);m--;n=a(m,n)}
-
-
+a(m,a(m,n-1))->{a(m,n-1);m--;n=a(m,n)}
 */
+typedef struct{
+    int data[100][2];
+    int top;
+}SSqStack;
+int Akm(int m,int n){
+    SSqStack S;S.top=-1;
+    while()
+}
