@@ -5,7 +5,7 @@
 #include <cctype>
 #define STACK_INIT_SIZE 100 //存储空间初始分配量
 #define STACKINCREMENT 10 //存储空间分配增量
-
+#define MAXQSIZE 100
 typedef char SElemType;
 //TODO:顺序栈的操作
 typedef struct{
@@ -979,4 +979,30 @@ Status DeQueue(XQueue &Q, int &e){
     else p->next=h->next;
     free(h);
     return OK;
+}
+//TODO:3.29
+
+typedef struct{
+    QElemType *base;
+    int front;
+    int rear;
+    int tag=0;             //1为满，0为空
+}SqTQueue;
+Status EnTQueue(SqTQueue &Q,QElemType e){
+    if(Q.front==Q.rear&&Q.tag==1) return OVERFLOW;
+    Q.base[Q.rear]=e;Q.rear=(Q.rear+1)%MAXQSIZE;
+    if(Q.front==Q.rear) Q.tag=1;
+    return OK;
+}
+Status DeTQueue(SqTQueue &Q,QElemType &e){
+    if(Q.front==Q.rear&&Q.tag==0)   return ERROR;
+    e=Q.base[Q.front];Q.front=(Q.front+1)%MAXQSIZE;
+    if(Q.front==Q.rear) Q.tag=0;
+    return OK;
+}
+//TODO:3.30
+typedef struct{
+    QElemType *base;
+    int rear;
+    int length;
 }
