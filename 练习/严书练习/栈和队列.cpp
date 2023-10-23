@@ -85,7 +85,7 @@ void DestroyStack(SqStack &s) {
     }
 }
 //TODO:--单链队列--队列的链式存储结构
-typedef char QElemType;
+typedef int QElemType;
 typedef struct QNode{
     QElemType data;
     struct QNode *next;
@@ -982,7 +982,7 @@ Status DeQueue(XQueue &Q, int &e){
 }
 //TODO:3.29
 
-typedef struct{
+typedef struct SqTQueue{
     QElemType *base;
     int front;
     int rear;
@@ -1005,4 +1005,131 @@ typedef struct{
     QElemType *base;
     int rear;
     int length;
+}SqLQueue;
+Status InitLQueue(SqLQueue &Q){
+    Q.base=(QElemType*)malloc(sizeof(QElemType)*MAXQSIZE);
+    Q.length=0;
+    Q.rear=0;
+    return OK;
+}
+Status DeLQueue(SqLQueue &Q,QElemType &e){
+    if(Q.length==0)  return ERROR;
+    int head=(Q.rear+MAXQSIZE-Q.length+1)%MAXQSIZE;
+    e=Q.base[head];
+    Q.length--;
+    return OK;
+}
+Status EnLQueue(SqLQueue &Q,QElemType e){
+    if(Q.length==MAXQSIZE) return ERROR;
+    Q.base[Q.rear]=e;
+    Q.rear=(Q.rear+1)%MAXQSIZE;Q.length++;
+    return OK;
+}
+//TODO:3.31
+Status Check_palindrome(char A[]){
+    SqStack S;InitStack(S);
+    int i=0;char p;
+    while(A[i]!='@'){
+        Push(S,A[i]);i++;
+    }
+    i=0;
+    while(A[i]!='@'){
+        Pop(S,p);
+        if(p!=A[i]){
+            printf("not palindrome");
+            return OK;
+        }
+        i++;
+    }
+    printf("is palindrome");
+    return OK;
+}
+//TODO;3.32
+Status Fibonacci_k(){
+    SqLQueue(Q);InitLQueue(Q);
+    while(Q.length<MAXQSIZE-1){
+        EnLQueue(Q,0);
+    }
+    EnLQueue(Q,1);
+    int result=1;int count=MAXQSIZE;int e;
+    while(result<=1000){
+        DeLQueue(Q,e);EnLQueue(Q,result);printf("%d\n",result);
+        count++;result=result*2-e;
+    }
+    return OK;
+}
+//TODO:3.33
+typedef struct Deque{
+    QElemType* base;
+    int front;
+    int rear;
+}EDeque;
+Status InitDeque(EDeque &Q){
+    Q.base=(QElemType*)malloc(sizeof(QElemType)*MAXQSIZE);
+    if(!Q.base) return OVERFLOW;
+    Q.front=Q.rear=0;
+    return OK;
+}
+Status EnDeque(EDeque &Q,QElemType e){
+    if((Q.rear+1)%MAXQSIZE==Q.front)    return ERROR;
+    int average=(Q.base[Q.front]+Q.base[(Q.rear-1+MAXQSIZE)%MAXQSIZE])/2;
+    if(e<average){
+        Q.front=(Q.front+MAXQSIZE-1)%MAXQSIZE;Q.base[Q.front]=e;
+    }else{
+        Q.base[Q.rear]=e;Q.rear=(Q.rear+1)%MAXQSIZE;
+    }
+    return OK;
+}
+Status DeEDeque(EDeque &Q,QElemType &e){
+    if(Q.rear==Q.front) return ERROR;
+    e=Q.base[Q.front];Q.front=(Q.front+1)%MAXQSIZE;
+    return OK;
+}
+//TODO:3.34
+typedef struct SeatDeque{
+    char* base;
+    int front;
+    int rear;
+}SeatDeque;
+Status InitSeatDeque(SeatDeque &Q){
+    Q.base=(char*)malloc(sizeof(char)*MAXQSIZE);
+    if(!Q.base) return OVERFLOW;
+    Q.front=Q.rear=0;
+    return OK;
+}
+Status EnSeatDeque(SeatDeque &Q,char e,int i){          //i=0队头入队 i=1队尾入队
+    if((Q.rear+1)%MAXQSIZE==Q.front)    return ERROR;
+    if(i==0){
+        Q.front=(Q.front+MAXQSIZE-1)%MAXQSIZE;Q.base[Q.front]=e;
+    }else{
+        Q.base[Q.rear]=e;Q.rear=(Q.rear+1)%MAXQSIZE;
+    }
+    return OK;
+}
+Status DeSeatDeque(SeatDeque &Q,char &e){
+    if(Q.rear==Q.front) return ERROR;
+    e=Q.base[Q.front];Q.front=(Q.front+1)%MAXQSIZE;
+    return OK;
+}
+void dispatch(char A[]){
+    SeatDeque Q;InitSeatDeque(Q);
+    int i=0;char e;
+    while(A[i]){
+        switch(A[i]){
+            case 'P':
+                EnSeatDeque(Q,A[i],0);printf("E,");
+                DeSeatDeque(Q,e);printf("D,");printf("车厢(%c),",e);
+                break;
+            case 'H':
+                EnSeatDeque(Q,A[i],1);printf("A,");
+                break;
+            case 'S':
+                EnSeatDeque(Q,A[i],0);printf("A,");
+                break;
+        }
+        i++;
+    }
+    while(Q.rear!=Q.front){
+        DeSeatDeque(Q,e);printf("D,");printf("车厢(%c),",e);
+    }
 }

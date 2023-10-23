@@ -169,7 +169,7 @@ int MidSearch(int A[],int B[],int n)
 }
 //TODO:page 017/12
 int MAINELEM(int A[],int n){
-    int B[n];int max=0;
+    int B[10];int max=0;
     for(int i=0;i<n;i++)    B[i]=0;
     for(int i=0;i<n;i++){
         B[A[i]]++;
@@ -184,7 +184,7 @@ int MAINELEM(int A[],int n){
 }
 //TODO:page 018/13
 int Unexistentelem(int A[], int n){
-    int B[n];int elem;
+    int B[10];int elem;
     for(int i=0;i<n;i++)    B[i]=0;
     for(int i=0;i<n;i++){
         B[A[i]]=1;
@@ -541,7 +541,7 @@ bool Get_common(LinkList &A,LinkList &B)
 
     return true;
 }
-//TODO:page 039/17
+//TODO:page 39/17
 typedef struct DNode{
     int data;
     struct DNode *prior,*next;
