@@ -1,6 +1,6 @@
-#include<stdio.h>
-#include<stdlib.h>
 
+#include <stdio.h>
+#include <stdlib.h>
 typedef struct LNode{
     int data;
     struct LNode* next;
@@ -32,7 +32,7 @@ bool judge(LinkList  L,int n)
 {
     int i;
     LNode *p=L->next;
-    char s[n/2];
+    char s[10];
     for(i=0;i<n/2;i++,p=p->next)
     {
         s[i]=p->data;
@@ -43,11 +43,11 @@ bool judge(LinkList  L,int n)
     {
         if(s[i]!=p->data)
         {
-            printf("%s","不是中心对称");
+            printf("不是中心对称\n");
             return false;
         }
     }
-    printf("%s","是中心对称");
+    printf("是中心对称\n");
     return true;
 }
 //TODO:page 67/05
@@ -67,14 +67,14 @@ bool Push(ShStack &S,int i,int x)
 {
     if(S.top[0]+1==S.top[1])
     {
-        printf("%s","共享栈已满");
+        printf("共享栈已满\n");
         return false;
     }
     switch(i)
     {
     case 0:S.top[i]+=1;S.data[S.top[i]]=x;break;
     case 1:S.top[i]-=1;S.data[S.top[i]]=x;break;
-    default: printf("%c","栈号错误");return false;
+    default: printf("栈号错误");return false;
     }
     return true;
 }
@@ -85,7 +85,7 @@ bool Pop(ShStack &S,int i,int &x)
     {case 0:
         if(S.top[0]==-1)
         {
-            printf("%c","0号栈已空");
+            printf("0号栈已空");
             return false;
         }
         x=S.data[S.top[0]];
@@ -94,13 +94,13 @@ bool Pop(ShStack &S,int i,int &x)
     case 1:
         if(S.top[1]==MaxSize)
         {
-            printf("%c","1号栈已空");
+            printf("1号栈已空");
             return false;
         }
         x=S.data[S.top[1]];
         S.top[1]+=1;
         break;
-    default:printf("%c","栈号错误");return false;
+    default:printf("栈号错误");return false;
     }
     return true;
 }
@@ -120,7 +120,7 @@ bool EnQueue(SqQueue &Q,int e)
 {
     if(Q.rear==Q.front&&Q.tag==1)
     {
-        printf("%c","栈已满");
+        printf("栈已满\n");
         return false;
     }
     Q.data[Q.rear]=e;
@@ -133,7 +133,7 @@ bool DeQueue(SqQueue &Q,int &e)
 {
     if(Q.rear==Q.front&&Q.tag==0)
     {
-        printf("%c","栈已空");
+        printf("栈已空\n");
         return false;
     }
     e=Q.data[Q.front];
@@ -154,7 +154,7 @@ bool BracketCheck(char str[])
             case '(':
                     if(top==MaxSize-1)
                         {
-                            printf("工作栈已满");
+                            printf("工作栈已满\n");
                             return false;
                         }
                     a[++top]=str[i];
@@ -162,7 +162,7 @@ bool BracketCheck(char str[])
             case'[':
                     if(top==MaxSize-1)
                         {
-                            printf("工作栈已满");
+                            printf("工作栈已满\n");
                             return false;
                         }
                     a[++top]=str[i];
@@ -170,7 +170,7 @@ bool BracketCheck(char str[])
             case'{':
                     if(top==MaxSize-1)
                         {
-                            printf("工作栈已满");
+                            printf("工作栈已满\n");
                             return false;
                         }
                     a[++top]=str[i];
@@ -178,7 +178,7 @@ bool BracketCheck(char str[])
             case')':
                     if(top==-1)
                         {
-                            printf("不匹配");
+                            printf("不匹配\n");
                             return false;
                         }
                     if(a[top]=='(')
@@ -187,7 +187,7 @@ bool BracketCheck(char str[])
             case']':
                     if(top==-1)
                         {
-                            printf("不匹配");
+                            printf("不匹配\n");
                             return false;
                         }
                     if(a[top]=='[')
@@ -196,7 +196,7 @@ bool BracketCheck(char str[])
             case'}':
                     if(top==-1)
                         {
-                            printf("不匹配");
+                            printf("不匹配\n");
                             return false;
                         }
                     if(a[top]=='{')
@@ -207,36 +207,38 @@ bool BracketCheck(char str[])
     }
     if(top!=-1)
         {
-            printf("不匹配");
+            printf("不匹配\n");
             return false;
         }
     printf("匹配");
+    return true;
 }
+//TODO:page 092/02
+//参考严书
 
 //TODO:page 092/03
-double p(int n,double x)
-{
-    struct stack{
-        int no;
-        double val;
-    }st [MaxSize];
-    int top=-1,i;
-    int val0=1,val1=2*x;
-    for(i=n;i>1;i--)
-    {
-        st[++top].no=i;
+
+double P(double x,int n){
+    if(n<0) return 0;
+    typedef struct PStack{
+        int data[100];
+        int top;
+    }PStack;
+    PStack S;S.top=-1;
+    double p1=2*x,p2=1;
+    if(n==1)    return p1;
+    if(n==0)    return p2;
+    while(n>1){
+        S.data[++S.top]=n--;
     }
-    while(top>=0){
-        st[top].val=2*x*val1-2*(i-1)*val1;
-        val0=val1;
-        val1=st[top].val;
-        top--;
+    while(S.top>=0){
+        int temp=p1;
+        p1=2*x*p1-2*(S.data[S.top--]-1)*p2;p2=temp;
     }
-   if(n==0)
-        return val0;
-    else
-        return val1; 
+    return p1;
 }
 
-//TODO:page 093/04
-
+int main(){
+    printf("%f",P(2,2));
+    return 0;
+}
