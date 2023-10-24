@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 typedef struct LNode{
@@ -236,9 +235,4 @@ double P(double x,int n){
         p1=2*x*p1-2*(S.data[S.top--]-1)*p2;p2=temp;
     }
     return p1;
-}
-
-int main(){
-    printf("%f",P(2,2));
-    return 0;
 }
