@@ -71,11 +71,13 @@
                 "/Zi",
                 "/EHsc",
                 "/nologo",
-                "/Fe${fileDirname}\\${fileBasenameNoExtension}.exe",
+                "/FoF:\\GitHubCode\\work\\myproject.obj",
+                "/source-charset:utf-8",
+                "/FeF:\\GitHubCode\\work\\myproject.exe",
                 "${file}"
             ],
             "options": {
-                "cwd": "${fileDirname}"
+                "cwd": "F:\\GitHubCode\\work"
             },
             "problemMatcher": [
                 "$msCompile"
