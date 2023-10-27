@@ -11,6 +11,16 @@ typedef struct{
     char *ch;
     int length;
 }HString;
+//TODO:串的块链结构
+#define CHUNKSIZE 80
+typedef struct Chunk{
+    char ch[CHUNKSIZE];
+    struct Chunk *next;
+}Chunk;
+typedef struct{
+    Chunk *head,*tail;
+    int curlen;
+}LString;
 //TODO:KMP
 int next[MAXSIZE];
 int nextval[MAXSIZE];
@@ -237,3 +247,127 @@ Status Replace(SString &S,SString T,SString V){
     return OK;
 }
 
+//TODO:4.18
+int* char_kinds(SString S,SString &r){
+    r[0]=0;
+    int *count=(int *)malloc(S[0]*sizeof(int));count[0]=r[0];
+    for(int i=1;i<=S[0];i++){
+        int j=1;
+        while(j<=r[0]&&r[j]!=S[i]){
+            j++;
+        }
+        if(j<=r[0]){count[j]++;}
+        else{r[0]++;r[r[0]]=S[i];count[j]=1;count[0]++;}
+    }
+    return count;
+}
+//TODO:4.19
+int *difference(SString s,SString t,SString &r){
+    r[0]=0;
+    int*count=(int*)malloc(sizeof(int)*s[0]);
+    for(int si=1;si<=s[0];si++){
+        int ti=1;
+        while(ti<=t[0]&&t[ti]!=s[si]){
+            ti++;
+        }
+        if(ti>t[0]){
+            int ri=1;
+            while(ri<=r[0]&&r[ri]!=s[si]){
+                ri++;
+            }
+            if(ri>r[0]){
+                r[0]++;count[0]=r[0];r[r[0]]=s[si];count[count[0]]=si;
+            }
+        }
+    }
+    return count;
+}
+//TODO:4.20
+void Delete(SString &s,SString t){
+    for(int si=1;si<=s[0];si++){
+        int ti=1,sj=si;
+        while(ti<=t[0]&&t[ti]==s[sj]){
+            ti++;sj++;
+        }
+        if(ti>t[0]){
+            for(int i=si;i<=s[0]-t[0];i++){
+                s[i]=s[sj];sj++;
+            }
+            s[0]=s[0]-t[0];si--;
+        }
+    }
+}
+//TODO:4.21
+//设串类型
+typedef struct strNode{
+    char chdata;
+    strNode *next;
+}strNode,*strPtr;
+//赋值
+strPtr strAssign(char p[]){
+    strPtr head=new strNode;head->next=NULL;strNode*r=head;
+    int i=0;
+    while(p[i]){
+        strNode*q=new strNode;q->chdata=p[i];
+        q->next=r->next;r->next=q;r=q;
+        i++;
+    }
+    return head;
+}
+//复制
+strPtr StrCopy(strPtr t){
+    if(!t)  return NULL;
+    strNode *p=t->next;
+    strPtr head=new strNode;head->next=NULL;strNode*r=head;
+    while(p){
+        strNode *q=new strNode;q->chdata=p->chdata;
+        q->next=r->next;r->next=q;r=q;
+        p=p->next;
+    }
+    return head;
+}
+//比较
+int StrCompare(strPtr s,strPtr t){
+    if(!s||!t)    return INFEASIBLE;
+    s=s->next;t=t->next;int tcount=0,scount=0;
+    while(s&&t&&s->chdata==t->chdata){
+        s=s->next;scount++;
+        t=t->next;tcount++;
+    }
+    return scount-tcount;    
+}
+int StrLength(strPtr s){
+    if(!s)  return INFEASIBLE;
+    s=s->next;int scount=0;
+    while(s){
+        s=s->next;scount++;
+    }
+    return scount;
+}
+strPtr Concat(strPtr s,strPtr t){
+    if(!s||!t)  return NULL;
+    strPtr head=new strNode;head->next=NULL;strNode*r=head;
+    while(s->next){
+        strNode*p=new strNode;p->chdata=s->next->chdata;
+        s=s->next;p->next=r->next;r->next=p;r=p;
+    }
+    while(t->next){
+        strNode*p=new strNode;p->chdata=t->next->chdata;
+        t=t->next;p->next=r->next;r->next=p;r=p;
+    }
+    return head;
+}
+//子串
+strPtr SubString(strPtr s,int start,int len){
+    if(!s)  return NULL;
+    strPtr head=new strNode;head->next=nullptr;strNode*r=head;
+    while(s->next&&start!=0){
+        s=s->next;start--;
+    }if(start!=0)  return NULL;
+    while(s&&len!=0){
+        strNode *p=new strNode;p->chdata=s->chdata;
+        p->next=r->next;r->next=p;r=p;s=s->next;len--;
+    }
+    if(len!=0)  return NULL;
+    return head;
+}
