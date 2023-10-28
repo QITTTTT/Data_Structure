@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "Status.h"
 #include <limits.h>
-
+#include <string.h>
 //TODO:串的定长顺序存储表示
 #define MAXSIZE 255
 typedef unsigned char SString[MAXSIZE+1];//0号单元存放串的长度
@@ -12,7 +12,7 @@ typedef struct{
     int length;
 }HString;
 //TODO:串的块链结构
-#define CHUNKSIZE 80
+#define CHUNKSIZE 2
 typedef struct Chunk{
     char ch[CHUNKSIZE];
     struct Chunk *next;
@@ -21,6 +21,18 @@ typedef struct{
     Chunk *head,*tail;
     int curlen;
 }LString;
+//打印LString
+void printLString(LString str) {
+    Chunk *currentChunk = str.head;
+    
+    while (currentChunk != NULL) {
+        for (int i = 0; i < CHUNKSIZE && currentChunk->ch[i] != '\0'; i++) {
+            printf("%c", currentChunk->ch[i]);
+        }
+        currentChunk = currentChunk->next;
+    }
+    printf("\n");
+}
 //TODO:KMP
 int next[MAXSIZE];
 int nextval[MAXSIZE];
@@ -371,3 +383,105 @@ strPtr SubString(strPtr s,int start,int len){
     if(len!=0)  return NULL;
     return head;
 }
+//TODO:4.22
+//插入到第n个字符之后
+void Insert(LString &t,LString s,int n){
+    //若n不合法或n=t.curlen，将s插到t的末尾,
+    if(n<0||n>=t.curlen){
+        Chunk*p=t.tail;Chunk*q=s.head;
+        while(q){
+            Chunk*r=new Chunk;*r=*q;
+            r->next=p->next;p->next=r;p=r;
+            q=q->next;
+        }
+        t.tail=p;
+    }else if(n==0){
+            Chunk*head=new Chunk;*head=*s.head;head->next=NULL;
+            Chunk*p=s.head->next;Chunk*q=head;
+            while(p){
+                Chunk*r=new Chunk;*r=*p;
+                r->next=q->next;q->next=r;q=r;
+                p=p->next;
+            }
+            q->next=t.head;t.head=head;
+        }else{
+            Chunk*p=t.head;Chunk*q=p;
+            while(n>0&&n>=CHUNKSIZE){
+                if(p->ch[CHUNKSIZE-1]!='\0'){
+                    n-=CHUNKSIZE;q=p;p=p->next;
+                }else{
+                    int i=0;
+                    while(p->ch[i]!='\0'){i++;}
+                    n-=i;q=p;p=p->next;
+                }
+            }
+            Chunk*head=new Chunk;*head=*s.head;head->next=NULL;
+                Chunk*r=s.head->next;Chunk*l=head;
+                while(r){
+                    Chunk*temp=new Chunk;*temp=*r;
+                    temp->next=l->next;l->next=temp;l=temp;
+                    r=r->next;
+                }
+            if(n==0){
+                q->next=head;l->next=p;
+            }else{
+                int i=0;
+                while(n>0){
+                    if(p->ch[i]!='\0')  n--;
+                    if(n!=0){
+                        if(p->ch[i+1]=='\0'){
+                            p=p->next;i=0;
+                        }else{i++;}
+                    }
+                }
+                Chunk*p1=new Chunk;
+                int k=i+1;int j=0;
+                while(p->ch[k]!='\0'){
+                    p1->ch[j]=p->ch[k];
+                    p->ch[k]='\0';k=k+1;j=j+1;
+                }
+                while(j<CHUNKSIZE){
+                    p1->ch[j]='\0';
+                }
+                p1->next=p->next;p->next=p1;
+                l->next=p1;p->next=head;
+            }
+        }
+    t.curlen+=s.curlen;
+}
+//TODO:4.23
+bool LStringSymmetry(LString S){
+    struct Stack{
+        char *base;
+        int top;
+    }SS;
+    SS.base=new char[S.curlen];SS.top=0;
+    int i;
+    while(SS.top<S.curlen/2){
+        for(i=0;i<CHUNKSIZE&&S.head->ch[i]!='\0'&&SS.top<S.curlen/2;i++){
+            SS.base[SS.top++]=S.head->ch[i];
+        }
+        if(SS.top<S.curlen/2)    S.head=S.head->next;
+    }
+    int j;
+    if(S.curlen%2==0){
+        if(S.head->ch[i]!='\0')   j=i;
+        else{S.head=S.head->next;j=0;}
+    }else{
+        if(S.head->ch[i]!='\0')    i=i;
+        else{S.head=S.head->next;i=0;}
+        if(S.head->ch[i+1]!='\0')    j=i+1;
+        else{S.head=S.head->next;j=0;}
+    }
+    
+    while(SS.top){
+        for(;j<CHUNKSIZE&&S.head->ch[j]!='\0'&&SS.top;j++){
+            if(SS.base[--SS.top]!=S.head->ch[j]){
+                printf("不对称");return false;
+            }
+        }
+        S.head=S.head->next;j=0;
+    }
+    printf("对称");return true;
+}
+
