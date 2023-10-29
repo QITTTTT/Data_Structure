@@ -3,6 +3,8 @@
 #include "Status.h"
 #include <limits.h>
 #include <string.h>
+#include <cstring>
+
 //TODO:串的定长顺序存储表示
 #define MAXSIZE 255
 typedef unsigned char SString[MAXSIZE+1];//0号单元存放串的长度
@@ -484,4 +486,65 @@ bool LStringSymmetry(LString S){
     }
     printf("对称");return true;
 }
-
+//TODO:4.24
+Status Concat(HString &T,HString S1,HString S2){
+    if(T.ch)    delete(T.ch);
+    T.ch=new char[S1.length+S2.length];
+    if(!T.ch)   return OVERFLOW;
+    int i;
+    for(i=0;i<S1.length;i++){
+        T.ch[i]=S1.ch[i];
+    }
+    while(i<S2.ch[i]){
+        T.ch[i]=S2.ch[i];
+        i++;
+    }
+    return OK;
+}
+//TODO:4.25
+Status Replace(HString &S,HString T,HString V){
+    if(S.length==0||V.length==0)    return INFEASIBLE;
+    int si=0;
+    while(si<S.length){
+        int ti=0,sj=si;
+        while(ti<T.length&&S.ch[sj]==T.ch[ti]){
+            ti++;sj++;
+        }
+        if(ti==T.length){
+            char*sp=S.ch;
+            S.ch=new char[S.length-T.length+V.length];
+            S.length=S.length-T.length+V.length;
+            int sk=0;int vi=0;
+            while(sk<si){ S.ch[sk]=sp[sk];sk++;}
+            while(vi<V.length){ S.ch[sk]=V.ch[vi];sk++;vi++;}
+            while(sk<S.length){ S.ch[sk]=sp[sj];sk++;sj++;}
+            delete[] sp;
+            si=si+V.length;
+        }else   si++;
+    }
+    return OK;
+}
+//TODO:4.26
+Status StrInsert(HString &S,int pos,HString T){
+    if(pos<1||pos>S.length+1) return INFEASIBLE;
+    char *sp=S.ch;
+    S.ch=new char[S.length+T.length];S.length=S.length+T.length;
+    int i=0;int ti=0;
+    while(i<pos-1){ S.ch[i]=sp[i];i++;}
+    while(ti<T.length){ S.ch[i]=T.ch[ti];i++;ti++;}
+    while(i<S.length){ S.ch[i]=sp[pos-1];i++;pos++;}
+    delete[] sp;
+    return OK;
+}//TODO:4.27
+int Index(SString S,SString T,int pos){
+    if(pos<1||pos>S[0]) return 0;
+    int i=pos,j=1;
+    while(i<=S[0]-T[0]+1){
+        while(S[i]==T[j]&&S[i+T[0]-1]==T[T[0]]){
+            i++;j++;
+            while(S[i]==T[j]&&j<=T[0]){i++;j++;}
+            if(j>T[0]) return i-T[0]+1;
+        }i=i-j+2;j=1;
+    }
+    return 0;
+}

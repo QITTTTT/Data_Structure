@@ -63,10 +63,10 @@
       "type": "tag-and-comment"
     },
     "TODO": {
-        "background": "#ffffff33",
-        "foreground": "#ffff25",
+        "background": "#000000",
+        "foreground": "#00ffd5",
         "type": "line",
-        "gutterIcon": true
+        "gutterIcon": true,
     },
     "NOTE": {
       "icon": "note",
