@@ -548,3 +548,135 @@ int Index(SString S,SString T,int pos){
     }
     return 0;
 }
+//TODO:4.28
+typedef struct StrNode{
+    char chdata;
+    StrNode *succ;  //下一个元素
+    StrNode *next;  //next
+}StrNode,*StrPtr;
+
+Status Get_next(StrPtr &S){
+    if(S==nullptr||S->succ==nullptr)    return ERROR;
+    StrNode *q=S;
+    StrNode *p=S->succ;p->next=q;
+    while(p->succ){
+        if(p->chdata==q->chdata||q==S){
+            q=q->succ;p=p->succ;p->next=q;
+        }else{q=q->next;}
+    }
+    return OK;
+}
+
+Status Get_nextval(StrPtr &S){
+    if(S==nullptr||S->succ==nullptr)    return ERROR;
+    StrNode *q=S;
+    StrNode *p=S->succ;p->next=q;
+    while(p->succ){
+        if(p->chdata==q->chdata||q==S){
+            q=q->succ;p=p->succ;
+            if(q->chdata!=p->chdata)  p->next=q;
+            else    p->next=q->next;
+        }else{q=q->next;}
+    }
+    return OK;
+}
+//TODO:4.29
+int Index_next(StrPtr S,StrPtr T,int pos){
+    if(pos<1)   return ERROR;
+    StrNode*sp=S,*tp=T;int counts=0;
+    while(counts<pos&&sp->succ){
+        sp=sp->succ;counts++;
+    }
+    if(counts!=pos)  return ERROR;
+    int Tlength=0;
+    while(tp->succ){
+        Tlength++;tp=tp->succ;
+    }
+    tp=T->succ;
+    while(sp&&tp){
+        if(tp==T||sp->chdata==tp->chdata){
+            sp=sp->succ;tp=tp->succ;counts++;
+        }else{tp=tp->next;}
+    }
+    if(!tp){    return counts-Tlength;}
+    else return 0;
+}
+//TODO:4.30
+//TAG:补充滑动哈希
+/*
+1、动态规划:
+    step1:dp[i][j]表示字符串前i个字符和前j个字符的最长公共后缀的长度
+    step2:if(S[i]==S[j]) dp[i][j]=dp[i-1][j-1]+1;
+          else  dp[i][j]=0;
+    step3:用maxlength记录最大的dp[i][j],maxi记录对应的子串位置
+    step4:先比较长度,再比较出现位置
+2、哈希：
+    会产生哈希冲突:可以构建两个哈希函数,也可测试不同的参数
+*/
+Status Find_DuplicateSubstring(SString S){
+    //dp数组初始化
+    int **dp=new int*[S[0]+1];
+    for(int i=0;i<S[0]+1;i++){
+        dp[i]=new int[S[0]+1];
+        for(int j=0;j<S[0]+1;j++){
+            dp[i][j]=0;
+        }
+    }
+    //动态规划
+    int maxlength=0;int maxi=0;
+    for(int i=1;i<=S[0];i++){
+        for(int j=1;j<=S[0];j++){
+            if(S[i]==S[j]&&i!=j){
+                dp[i][j]=dp[i-1][j-1]+1;
+            }else   dp[i][j]=0;
+            if(dp[i][j]>maxlength){
+                maxlength=dp[i][j];maxi=i;
+            }
+        }
+    }
+    //返回子串
+    if(maxlength!=0){
+        SString T;
+        T[0]=maxlength;
+        for(int i=1;i<=T[0];i++){
+            T[i]=S[maxi-maxlength+i];printf("%c",T[i]);
+        }
+        printf("第一次出现的位置为%d",maxi-maxlength+1);
+    }
+    return OK;
+}
+//TODO:4.31
+/*
+同样为动态规划
+*/
+Status LongestCommonSubstring(SString S,SString T){
+    int **dp=new int*[S[0]+1];
+    for(int i=0;i<S[0]+1;i++){
+        dp[i]=new int[S[0]+1];
+        for(int j=0;j<S[0]+1;j++){
+            dp[i][j]=0;
+        }
+    }
+    //动态规划
+    int maxlength=0;int maxi=0;
+    for(int i=1;i<=S[0];i++){
+        for(int j=1;j<=T[0];j++){
+            if(S[i]==T[j]){
+                dp[i][j]=dp[i-1][j-1]+1;
+            }else   dp[i][j]=0;
+            if(dp[i][j]>maxlength){
+                maxlength=dp[i][j];maxi=i;
+            }
+        }
+    }
+    //返回子串
+    if(maxlength!=0){
+        SString U;
+        U[0]=maxlength;
+        for(int i=1;i<=U[0];i++){
+            U[i]=S[maxi-maxlength+i];printf("%c",U[i]);
+        }
+        printf("第一次出现的位置为%d",maxi-maxlength+1);
+    }
+    return OK;
+}
