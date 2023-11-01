@@ -602,7 +602,6 @@ int Index_next(StrPtr S,StrPtr T,int pos){
     else return 0;
 }
 //TODO:4.30
-//TAG:补充滑动哈希
 /*
 1、动态规划:
     step1:dp[i][j]表示字符串前i个字符和前j个字符的最长公共后缀的长度
@@ -610,9 +609,8 @@ int Index_next(StrPtr S,StrPtr T,int pos){
           else  dp[i][j]=0;
     step3:用maxlength记录最大的dp[i][j],maxi记录对应的子串位置
     step4:先比较长度,再比较出现位置
-2、哈希：
-    会产生哈希冲突:可以构建两个哈希函数,也可测试不同的参数
 */
+//TAG:动态规划
 Status Find_DuplicateSubstring(SString S){
     //dp数组初始化
     int **dp=new int*[S[0]+1];
