@@ -75,7 +75,7 @@
     },
     "INFO": {
       "icon": "info",
-      "foreground": "#909399",
+      "foreground": "#ff7300",
       "type": "text-and-comment"
     },
     "TAG": {
