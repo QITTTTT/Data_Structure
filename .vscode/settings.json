@@ -104,7 +104,8 @@
     "TAG",
     "XXX"
   ],
-  "todo-tree.general.statusBar": "total"
+  "todo-tree.general.statusBar": "total",
+  "C_Cpp.errorSquiggles": "disabled"
 }
 
 
