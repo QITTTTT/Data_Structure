@@ -469,4 +469,135 @@ void PrintGHTList(GHTList L) {
     }
 }
 
+//TODO:5.18
+/*
+逆置：
+    1：我们把数组分成两个整体：后k个和前n-k个
+    2：经过移动，后k个元素会和前n-k个元素进行位置调换。
+    所以我们可以先整体进行逆置，再分别对两堆元素进行逆置。
+*/
+Status Reverse(int A[],int start,int end){
+    if(start>end)   return ERROR;
+    int e;
+    while(start<end){
+        e=A[start];
+        A[start++]=A[end];
+        A[end--]=e;
+    }
+    return OK;
+}
+Status Move_1(int A[],int len,int k){
+    k=k%len;
+    Reverse(A,0,len-1);
+    Reverse(A,0,k-1);
+    Reverse(A,k,len-1);
+    return OK;
+}
+/*
+哈希思想：
+    坐标为i的元素，应移动到j=(i+k)%n上，i=j-k+n;环的数量为最大公约数；
+*/
+int gcd(int a, int b) {
+    while (b != 0) {
+        int t = b;
+        b = a % b;
+        a = t;
+    }
+    return a;
+}
+Status Move_2(int A[],int len,int k){
+    k=k%len;int kl=gcd(len,k);
+    for(int count =0;count<kl;count++){
+        int i=count;int j=(i+k)%len;int e=A[j];int ecount=(j+k)%len;
+        do{
+            A[j]=A[i];
+            j=i;
+            if(j-k>=0)   i=j-k;
+            else i=j-k+len;
+        }while(j!=ecount);
+        A[j]=e;
+    }
+    return OK;
+}
+//TODO:5.19
+/*
+思想：
+    建立一个二维数组，记录行的最小值元素，列的最大值元素。
+    第一遍遍历矩阵，得到二维数组；第二遍遍历矩阵，判断其对应的值是否满足马鞍点的要求
+    如果是则输出；不是则继续扫描。
+*/
+Status Saddle_point(int **A,int m,int n){
+    int *a=new int[m];int *b=new int[n];    //a记录行最小元素，b记录列最大元素
+    //初始化数组
+    for(int i=0;i<m;i++){
+        a[i]=INT_MAX;
+    }
+    for(int i=0;i<n;i++){
+        b[i]=INT_MIN;
+    }
+    //第一遍扫描矩阵，得到两个数组
+    for(int i=0;i<m;i++){
+        for(int j=0;j<n;j++){
+            if(A[i][j]<a[i])    a[i]=A[i][j];
+            if(A[i][j]>b[j])    b[j]=A[i][j];
+        }
+    }
+    //第二遍扫描矩阵，寻找马鞍点
+    int tag=1;
+    for(int i=0;i<m;i++){
+        for(int j=0;j<n;j++){
+            if(A[i][j]==a[i]&&A[i][j]==b[j]){
+                tag=0;
+                printf("行号:%d,列号:%d,元素值:%d",i+1,j+1,A[i][j]);
+            }
+        }
+    }
+    if(tag) printf("没有马鞍点");
+    delete[] a;delete[] b;
+    return OK;
+}
 
+//TODO:5.20
+/*
+不会处理变参，所以我直接用课本中的例子
+*/
+void Print(int **A,int m){  
+    //m为最大次数
+    for(int i=m;i>=0;i--){
+        for(int j=i,k=0;j>=0;j--,k++){
+            if(A[j][k]!=0){
+                printf("%d",A[j][k]);
+                if(j!=0)    printf("%cE%d",'x',j);
+                if(k!=0)    printf("%cE%d",'y',k);
+                if(i!=0)    printf("+");
+            }
+        }
+    }
+}
+//TODO:5.21
+Status Addition(TSMatrix &C,TSMatrix A,TSMatrix B){
+    C.mu=A.mu;C.nu=A.nu;
+    int ai=0,bi=0,ci=0;
+    while(ai<A.nu||bi<B.nu){
+        if(A.data[ai].i<B.data[bi].i){
+            C.data[ci]=A.data[ai];
+            ci++;ai++;
+        }else if(A.data[ai].i==B.data[bi].i){
+            if(A.data[ai].j<B.data[bi].j){
+                C.data[ci]=A.data[ai];
+                ci++;ai++;
+            }else if(A.data[ai].j==B.data[bi].j){
+                C.data[ci]=A.data[ai];C.data[ci].e+=B.data[bi].e;
+                ai++;bi++;ci++;
+            }else{
+                C.data[ci]=B.data[bi];
+                ci++;bi++;
+            }
+        }else{
+            C.data[ci]=B.data[bi];
+            ci++;bi++;
+        }
+    }//while
+    C.tu=ci;
+    return OK;
+}
