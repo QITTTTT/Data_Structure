@@ -228,11 +228,36 @@ Status PostOrderTraverse(BiTree T){
     }
     return OK;
 }
-int main(){
-    BiTree T;
-    char ch[]="ABC  DE G  F   ";int i=0;
-    CreateBiTree(T,ch,i);
-    printf("建立完成");
-    PostOrderTraverse(T);
-    return 0;
+//TODO:线索二叉树
+//-----------------二叉树的二叉线索存储表示----------------
+#define TElemType char;
+enum PointerTag{Link,Thread};
+typedef struct BiThrNode{
+    TElemType data;
+    struct BiThrNode *lchild,*rchild;
+    PointerTag LTag,RTag;
+}BiThrNode,*BiThrTree;
+//中序线索化
+void InThreading(BiThrTree &p,BiThrTree &pre){
+    if(p){
+        InThreading(p->lchild,pre);
+        if(!p->lchild) {p->lchild=pre;p->LTag=Thread;}
+        if(!pre->rchild) {pre->rchild=p;pre->RTag=Thread;}
+        pre=p;
+        InThreading(p->rchild,pre);
+    }
+}
+Status InOrderThreading(BiThrTree &Thrt,BiThrTee T){
+    Thrt=(BiThrNode*)malloc(sizeof(BiThrNode));
+    if(!Thrt)   exit(OVERFLOW);
+    Thrt->LTag=0;Thrt->RTag=1;Thrt->rchild=Thrt;
+    if(!T)  Thrt->lchild=Thrt;
+    else{
+        Thrt->lchild=T;
+        BiThrNode*pre=Thrt,*p=T;
+        InThreading(p,pre);
+        pre->RTag=Thread;pre->rchild=Thrt;
+        Thrt->rchild=p;
+    }
+    return OK;
 }
