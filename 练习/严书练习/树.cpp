@@ -230,7 +230,7 @@ Status PostOrderTraverse(BiTree T){
 }
 //TODO:线索二叉树
 //-----------------二叉树的二叉线索存储表示----------------
-#define TElemType char;
+typedef char TElemType;
 enum PointerTag{Link,Thread};
 typedef struct BiThrNode{
     TElemType data;
@@ -247,10 +247,10 @@ void InThreading(BiThrTree &p,BiThrTree &pre){
         InThreading(p->rchild,pre);
     }
 }
-Status InOrderThreading(BiThrTree &Thrt,BiThrTee T){
+Status InOrderThreading(BiThrTree &Thrt,BiThrTree T){
     Thrt=(BiThrNode*)malloc(sizeof(BiThrNode));
     if(!Thrt)   exit(OVERFLOW);
-    Thrt->LTag=0;Thrt->RTag=1;Thrt->rchild=Thrt;
+    Thrt->LTag=Link;Thrt->RTag=Thread;Thrt->rchild=Thrt;
     if(!T)  Thrt->lchild=Thrt;
     else{
         Thrt->lchild=T;
@@ -260,4 +260,122 @@ Status InOrderThreading(BiThrTree &Thrt,BiThrTee T){
         Thrt->rchild=p;
     }
     return OK;
+}
+//TODO:赫夫曼树
+//--------------赫夫曼树和赫夫曼编码的存储表示-----------------
+typedef struct{
+    unsigned int weight;
+    unsigned int parent,lchild,rchild;
+}HTNode,*HuffmanTree;
+typedef char **HuffmanCode;
+//--------------------------赫夫曼编码---------------------------
+void Select(HuffmanTree T,int n,int &m1,int &m2){
+    if(n==1)    m1=m2=n;
+    else if(n==2)  {m1=1;m2=2;}
+    else{
+        int k=1;
+        while(T[k].parent!=0)   k++;
+        m1=k;k++;
+        while(T[k].parent!=0)   k++;
+        m2=k;
+        for(int i=k+1;i<=n;i++){
+            if(T[i].parent==0){if(T[i].weight<T[m1].weight){
+                if(T[i].weight<T[m2].weight){
+                    if(T[m1].weight<T[m2].weight) m2=i;
+                    else m1=1;
+                }else{
+                    m1=i;
+                }
+            }else if(T[i].weight<T[m2].weight){
+                m2=i;
+            }}
+        }
+    }
+}
+void StrCopy(char*p,char*q){
+    int i=0;
+    while(q[i]!='\0'){
+        p[i]=q[i];
+        i++;
+    }
+    p[i]='\0';
+}
+void HuffmanCoding(HuffmanTree &HT,HuffmanCode &HC,unsigned int *w,int n){
+    //w存放n个字符的权值,n是字符个数
+    if(n<1) return;
+    int m=2*n-1;
+    HT=(HuffmanTree)malloc((m+1)*sizeof(HTNode));//0号单元弃用，用来标记没有parent的结点
+    if(!HT) exit(OVERFLOW);
+    for(int i=1;i<=n;i++)   HT[i]={w[i],0,0,0};
+    for(int i=n+1;i<=m;i++) HT[i]={0,0,0,0};
+    for(int i=n;i<m;i++){
+        int m1,m2;
+        Select(HT,i,m1,m2);
+        HT[i+1].weight=HT[m1].weight+HT[m2].weight;
+        HT[i+1].lchild=m1;HT[i+1].rchild=m2;
+        HT[m1].parent=i+1;HT[m2].parent=i+1;
+    }
+    //---------------------求哈夫曼编码---------------------
+    /*
+    HC=(HuffmanCode)malloc((n+1)*sizeof(char*));
+    if(!HC) exit(OVERFLOW);
+    char *cd = (char*)malloc(n*sizeof(char));
+    if(!cd) exit(OVERFLOW);cd[n-1]='\0';
+    for(int i=1;i<=n;i++){
+        int start=n-1;
+        for(int j=i,k=HT[j].parent;k>0;j=k,k=HT[j].parent){
+            if(HT[k].lchild==j) cd[--start]='0';
+            else if(HT[k].rchild==j)    cd[--start]='1';
+        }
+        HC[i]=(char*)malloc(n*sizeof(char));
+        if(!HC[i])  exit(OVERFLOW);
+        StrCopy(HC[i],&cd[start]);
+    }
+    free(cd);
+    */
+    //---------------------------------------------------------
+
+    //-----------------------哈夫曼编码的无栈非递归算法----------------------
+
+    HC=(HuffmanCode)malloc((n+1)*sizeof(char*));
+    if(!HC) exit(OVERFLOW);
+    char *cd = (char*)malloc(n*sizeof(char));
+    if(!cd) exit(OVERFLOW);
+    for(int i=1;i<=m;i++)   HT[i].weight=0;
+    int p=m,start=0;
+    while(p){
+        if(HT[p].weight==0){
+            HT[p].weight=1;
+            if(HT[p].lchild!=0){
+                p=HT[p].lchild;cd[start++]='0';
+            }else{
+                cd[start]='\0';
+                HC[p]=(char*)malloc(n*sizeof(char));
+                if(!HC[p])  exit(OVERFLOW);
+                StrCopy(HC[p],cd);
+                p=HT[p].parent;start--;
+            }
+        }else if(HT[p].weight==1){
+            HT[p].weight=2;
+            p=HT[p].rchild;cd[start++]='1';
+        }else{
+            p=HT[p].parent;start--;
+        }
+    }
+    //---------------------------------------------------------------------
+}
+int main() {
+    HuffmanTree HT;
+    HuffmanCode HC;
+    unsigned int w[5] = {0, 5, 29, 7, 8};  // 0号位置弃用
+    int n = 4;  // 字符个数
+
+    HuffmanCoding(HT, HC, w, n);
+
+    // 打印Huffman编码
+    for (int i = 1; i <= n; i++) {
+        printf("Character %d: %s\n", i, HC[i]);
+    }
+
+    return 0;
 }
