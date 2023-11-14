@@ -71,13 +71,13 @@
                 "/Zi",
                 "/EHsc",
                 "/nologo",
-                "/FoF:\\GitHubCode\\work\\myproject.obj",
+                "/FoF:\\GitHubCode\\Data_Structure\\myproject.obj",
                 "/source-charset:utf-8",
-                "/FeF:\\GitHubCode\\work\\myproject.exe",
+                "/FeF:\\GitHubCode\\Data_Structure\\myproject.exe",
                 "${file}"
             ],
             "options": {
-                "cwd": "F:\\GitHubCode\\work"
+                "cwd": "F:\\GitHubCode\\Data_Structure"
             },
             "problemMatcher": [
                 "$msCompile"

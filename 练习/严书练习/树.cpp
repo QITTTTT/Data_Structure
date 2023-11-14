@@ -3,6 +3,11 @@
 #include "Status.h"
 #include <limits.h>
 
+//TODO:二叉树的顺序存储
+//----------------二叉树的顺序存储表示------------------
+typedef int TELemType;
+#define MAX_TREE_SIZE 100
+typedef TELemType SqBiTree[MAX_TREE_SIZE];
 //TODO:二叉树的链式存储
 typedef char ElemType;
 typedef struct BiTNode{
@@ -364,18 +369,88 @@ void HuffmanCoding(HuffmanTree &HT,HuffmanCode &HC,unsigned int *w,int n){
     }
     //---------------------------------------------------------------------
 }
-int main() {
-    HuffmanTree HT;
-    HuffmanCode HC;
-    unsigned int w[5] = {0, 5, 29, 7, 8};  // 0号位置弃用
-    int n = 4;  // 字符个数
-
-    HuffmanCoding(HT, HC, w, n);
-
-    // 打印Huffman编码
-    for (int i = 1; i <= n; i++) {
-        printf("Character %d: %s\n", i, HC[i]);
+//TODO:6.33
+bool Judge_u_v(int L[],int R[],int n,int u,int v){
+    if(v==0)    return false;
+    else if(u==v)   return true;
+    else    return Judge_u_v(L,R,n,u,L[v])||Judge_u_v(L,R,n,u,R[v]);
+}
+//TODO:6.34
+bool Judge_u_v_plus(int L[],int R[],int n,int u,int v,int *T){
+    T=(int*)calloc(n+1,sizeof(int));
+    if(!T)  exit(OVERFLOW);
+    for(int i=1;i<=n;i++){
+        T[L[i]]=i;T[R[i]]=i;
     }
-
+    while(u!=0){
+        if(u==v)    return true;
+        else    u=T[u];
+    }
+    return false;
+}
+//TODO:6.35
+int Decimal_valve(SqBiTree T,int i){
+    return i+1;
+}
+//TODO:6.37
+//继续练习一遍先序的非递归算法
+void algorithm_6_37(BiTree T){
+    if(!T)  return;
+    SqStack S;InitStack(S);BiTNode*p=T;
+    while(p||!StackEmpty(S)){
+        if(!p){
+            Push(S,p);visit(p);p=p->lchild;
+        }
+        else{
+            Pop(S,p);p=p->rchild;
+        }
+    }
+}
+//TODO:6.39
+typedef struct PlusBiTNode{
+    TElemType data;
+    struct PlusBiTNode *lchild,*rchild,*parent;
+    int mark;
+}PBiTNode,*PBiTree;
+void PostOrderTraverse(PBiTree T){
+    if(!T)  return;
+    PBiTNode *p=T;
+    while(p){
+        if(p->mark==0){
+            p->mark=1;
+            if(p->lchild)   p=p->lchild;
+        }else if(p->mark==1){
+            p->mark=2;
+            if(p->rchild)   p=p->rchild;
+        }else if(p->mark==2){
+            printf("%c",p->data);p=p->parent;
+        }
+    }
+}
+//TODO:6.42
+int Leaf_amount(BiTree T){
+    if(T){
+        BiTNode*p=T;
+        if(!p->lchild&&!p->rchild)  return 1;
+        return Leaf_amount(p->lchild)+Leaf_amount(p->rchild);
+    }
+    return 0;
+}
+//TODO:6.43
+void Switch(BiTree T){
+    if(T){
+        BiTNode*p=T->rchild;
+        T->rchild=T->lchild;
+        T->lchild=p;
+        Switch(T->rchild);
+        Switch(T->lchild);
+    }
+}
+int main(){
+    char p[]="ABC  DE G  F   ";
+    BiTree T;int i=0;
+    CreateBiTree(T,p,i);
+    Switch(T);
+    PreOrderTraverse_6_3(T);
     return 0;
 }
