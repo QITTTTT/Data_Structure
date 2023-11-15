@@ -112,6 +112,55 @@ void DestroyStack(SqStack &s) {
         s.stacksize = 0;
     }
 }
+//TODO:队列及基本操作
+typedef BiTNode* QElemType;
+typedef struct QNode{
+    QElemType data;
+    struct QNode *next;
+}QNode,*QueuePtr;
+typedef struct{
+    QueuePtr front;
+    QueuePtr rear;
+}LinkQueue;
+//初始化
+Status InitQueue(LinkQueue &Q){
+    Q.front=Q.rear=(QueuePtr)malloc(sizeof(QNode));
+    if(!Q.front)    exit(OVERFLOW);
+    Q.front->next=nullptr;
+    return OK;
+}
+//销毁队列
+Status Destroy(LinkQueue &Q){
+    while(Q.front){
+        Q.rear=Q.front->next;
+        free(Q.front);
+        Q.front=Q.rear;
+    }
+    return OK;
+}
+//插入元素
+Status EnQueue(LinkQueue &Q,QElemType e){
+    QNode*p=(QueuePtr)malloc(sizeof(QNode));
+    if(!p)  return OVERFLOW;
+    p->data=e;p->next=nullptr;
+    Q.rear->next=p;Q.rear=p;
+    return OK;
+}
+//删除队头元素
+Status DeQueue(LinkQueue &Q,QElemType &e){
+    if(Q.front==Q.rear) return false;
+    QueuePtr p=Q.front->next;
+    Q.front->next=p->next;
+    if(p==Q.rear)   Q.rear=Q.front;
+    e=p->data;
+    free(p);
+    return OK;
+}
+//判空
+bool QueueEmpty(LinkQueue Q){
+    if(Q.front==Q.rear) return true;
+    return false;
+}
 //----------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------
 //****************************************三种遍历算法*******************************************
@@ -130,6 +179,14 @@ tip1.关键是判断栈中的结点执行到哪一步了，有两种方法
 void visit(BiTNode* T){
     if(T!=nullptr)
     printf("%c",T->data);
+}
+//先序递归
+void PreOrderTraverse(BiTree T){
+    if(T){
+        visit(T);
+        PreOrderTraverse(T->lchild);
+        PreOrderTraverse(T->rchild);
+    }
 }
 //先序遍历(自写)
 Status PreOrderTraverse_me(BiTree T){
@@ -446,11 +503,103 @@ void Switch(BiTree T){
         Switch(T->lchild);
     }
 }
+//TODO:6.45
+void Delete_Node(BiTree &T){
+    if(T){
+        Delete_Node(T->lchild);
+        Delete_Node(T->rchild);
+        free(T);T=nullptr;
+    }
+}
+void Delete_x(BiTree &T,char x){
+    if(T){
+        if(T->data==x){
+            Delete_Node(T);
+        }else{
+            Delete_x(T->lchild,x);
+            Delete_x(T->rchild,x);
+        }
+    }
+}
+//TODO:6.47
+void LevelTraverse(BiTree T){
+    if(T){
+        LinkQueue Q;InitQueue(Q);EnQueue(Q,T);BiTNode*p;
+        while(!QueueEmpty(Q)){
+            DeQueue(Q,p);visit(p);
+            if(p->lchild)   EnQueue(Q,p->lchild);
+            if(p->rchild)   EnQueue(Q,p->rchild);
+        }
+    }    
+}
+//TODO:6.48
+//用结点值代替结点指针
+int Closest_Common_Ancestor(BiTree T,char p,char q){
+    if(!T)  return 0;
+    int left=Closest_Common_Ancestor(T->lchild,p,q);int right=Closest_Common_Ancestor(T->rchild,p,q);
+    if(T->data==p||T->data==q){
+        if(left+right==1) {visit(T);return 0;}
+        else    return 1;
+    }
+    if(left+right==2){visit(T);return 0;}
+    return left+right;
+}
+//TODO:6.49
+/*
+    算法思想：采用层次遍历算法，将所有节点加入队列(包括空结点)。遇到空结点时应判断其后是否还有非空结点。
+*/
+bool IsCompleteBTree(BiTree T){
+    if(!T) return true;
+    int tag=0;
+    LinkQueue Q;InitQueue(Q);EnQueue(Q,T);BiTNode*p;
+    while(!QueueEmpty(Q)){
+        DeQueue(Q,p);
+        if(p==nullptr&&tag==0)  tag=1;
+        else if(p==nullptr&&tag==1)  return false;
+        else{
+               EnQueue(Q,p->lchild);
+               EnQueue(Q,p->rchild);
+        }
+    }
+    return true;
+}
+//TODO:6.50
+Status CreateBiTree(BiTree &T,char A[][3],int i){
+    if(A[i][0]=='^'&&A[i][1]=='^')  T=nullptr;
+    else{
+        T=(BiTNode*)malloc(sizeof(BiTNode));
+        if(!T)  exit(OVERFLOW);
+        T->data=A[i][1];T->lchild=T->rchild=nullptr;
+        int j=1;
+        while(A[j][1]!='^'){
+            if(A[j][0]==T->data){
+                if(A[j][2]=='L')    CreateBiTree(T->lchild,A,j);
+                else CreateBiTree(T->rchild,A,j);
+            }
+            j++;
+        }
+    }
+    return OK;
+}
+//TODO:6.51
+void Print_Expression(BiTree T,int tag){
+    if(T){
+        int Ttag=0;
+        if((T->data=='-'||T->data=='+')&&tag)  printf("(");
+        if(T->data=='*'||T->data=='/')  Ttag=1;
+        Print_Expression(T->lchild,Ttag);
+        visit(T);
+        Print_Expression(T->rchild,Ttag);
+        if((T->data=='-'||T->data=='+')&&tag)  printf(")");
+    }
+}
+//TODO:6.54
+
 int main(){
     char p[]="ABC  DE G  F   ";
+    char q[]="-+a  *b  -c  d  /e  f  ";
     BiTree T;int i=0;
-    CreateBiTree(T,p,i);
-    Switch(T);
-    PreOrderTraverse_6_3(T);
+    CreateBiTree(T,q,i);
+    Print_Expression(T,0);
     return 0;
 }
