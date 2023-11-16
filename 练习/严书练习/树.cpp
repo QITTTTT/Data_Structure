@@ -299,6 +299,9 @@ typedef struct BiThrNode{
     struct BiThrNode *lchild,*rchild;
     PointerTag LTag,RTag;
 }BiThrNode,*BiThrTree;
+/*
+    在线索化的过程中，我们一定要保证左子树线索化和右子树线索化传入的是Link。
+*/
 //中序线索化
 void InThreading(BiThrTree &p,BiThrTree &pre){
     if(p){
@@ -320,6 +323,29 @@ Status InOrderThreading(BiThrTree &Thrt,BiThrTree T){
         InThreading(p,pre);
         pre->RTag=Thread;pre->rchild=Thrt;
         Thrt->rchild=p;
+    }
+    return OK;
+}
+//先序线索化
+void PreThreading(BiThrTree p,BiThrTree &pre){
+    if(p){
+        if(!p->lchild){p->LTag=Thread;p->lchild=pre;}
+        if(!pre->rchild){pre->RTag=Thread;pre->rchild=p;}
+        pre=p;
+        if(p->LTag==Link)   PreThreading(p->lchild,pre);
+        if(p->RTag==Link)   PreThreading(p->rchild,pre);
+    }
+}
+Status PreOrderThreading(BiThrTree &Thrt,BiThrTree T){
+    //建立头结点
+    Thrt=(BiThrNode*)malloc(sizeof(BiThrNode));
+    if(!Thrt) exit(OVERFLOW);
+    Thrt->LTag=Link;Thrt->RTag=Thread;Thrt->rchild=Thrt;
+    if(!T)  Thrt->lchild=Thrt;
+    else{
+        BiThrNode*pre=Thrt,*p=T;
+        PreThreading(p,pre);
+        pre->RTag=Thread;pre->rchild=Thrt;Thrt->rchild=pre;
     }
     return OK;
 }
@@ -594,12 +620,136 @@ void Print_Expression(BiTree T,int tag){
     }
 }
 //TODO:6.54
+typedef struct{
+    ElemType *elem;
+    int length;
+    int listsize;
+}SqList;
+Status CreateBiTree(BiTree &T,SqList sa){
+    if(sa.length==0) T=nullptr;
+    else{
+        T=(BiTNode*)malloc(sizeof(BiTNode));
+        if(!T)  exit(OVERFLOW);T->data=sa.elem[0];
+        LinkQueue Q;InitQueue(Q);EnQueue(Q,T);BiTNode*p;
+        int i=1;
+        while(i<sa.length){
+            DeQueue(Q,p);
+            p->lchild=(BiTNode*)malloc(sizeof(BiTNode));
+            if(!p)  exit(OVERFLOW);
+            p->lchild->data=sa.elem[i];p->lchild->lchild=nullptr;p->lchild->rchild=nullptr;
+            EnQueue(Q,p->lchild);
+            i++;
+            if(i<sa.length){
+                p->rchild=(BiTNode*)malloc(sizeof(BiTNode));
+                if(!p) exit(OVERFLOW);
+                p->rchild->data=sa.elem[i];p->rchild->lchild=nullptr;p->rchild->rchild=nullptr;
+                EnQueue(Q,p->rchild);
+            }
+            i++;
+        }
+    }
+    return OK;
+}
+//TODO:6.56
+BiThrNode* Post_BiThrNode(BiThrNode*p){
+    if(!p||p->rchild->rchild==p)  return nullptr;
+    if(p->RTag==Thread)  return p->rchild;
+    else{
+        if(p->LTag==Link)    return p->lchild;
+        else    return p->rchild;
+    }
+}
+//TODO:6.58
+void Insert_InOrderThreadingTree(BiThrNode* p,BiThrNode* x){
+    if(!p||!x)  return;
+    //若p没有左孩子，x的后继是p，p的前驱是x，x最左下的结点的前驱是p原来的前驱
+    if(p->LTag==Thread){
+        BiThrNode *q=x;
+        while(q->LTag==Link)    q=q->lchild;
+        q->lchild=p->lchild;
+        p->LTag=Link;p->lchild=x;x->RTag=Thread;x->rchild=p;
+    }else{  
+        //若p有左孩子，x最左下的前驱是p左孩子的第一个结点的前驱；
+        //x的后继是p左孩子的第一个节点，p左孩子的第一个节点的前驱是x
+        //p的左孩子改为x
+        BiThrNode *pf=p->lchild;
+        while(pf->LTag==Link)   pf=pf->lchild;
+        BiThrNode *xf=x;
+        while(xf->LTag==Link)   xf=xf->lchild;
+        xf->lchild=pf->lchild;pf->lchild=x;
+        x->RTag=Link;x->rchild=p->lchild;
+        p->lchild=x;
+    }
+}
+//TODO:树的孩子兄弟表示法
+//-----------------------树的二叉链表(孩子-兄弟)存储表示---------------------
+typedef struct CSNode{
+    ElemType data;
+    CSNode  *firstchild,*nextsibling;
+}CSNode,*CSTree;
 
-int main(){
-    char p[]="ABC  DE G  F   ";
-    char q[]="-+a  *b  -c  d  /e  f  ";
-    BiTree T;int i=0;
-    CreateBiTree(T,q,i);
-    Print_Expression(T,0);
-    return 0;
+//TODO:6.6
+//树的先根遍历
+void RFTraverse_Leaf(CSTree T,int &amount){
+    if(T){
+        if(!T->firstchild)  amount++;
+        RFTraverse_Leaf(T->firstchild,amount);
+        RFTraverse_Leaf(T->nextsibling,amount);
+    }
+}
+int Leaf_amount(CSTree T){
+    int amount=0;
+    RFTraverse_Leaf(T,amount);
+    return amount;
+}
+//TODO:6.62
+void RFTraverse_Depth(CSTree T,int &high,int &depth){
+    if(T){
+        if(!T->firstchild&&high>depth)  depth=high;
+        high++;
+        RFTraverse_Depth(T->firstchild,high,depth);
+        high--;
+        RFTraverse_Depth(T->nextsibling,high,depth);
+    }
+}
+int Depth(CSTree T){
+    if(T){
+        int Depth=1,high=1;
+        RFTraverse_Depth(T,high,Depth);
+        return Depth;
+    }else   return 0;
+}
+//TODO:6.65
+//注意下标
+BiTNode* CreateBiTree(char *pre,char *in,int length){
+    if(length==0)   return nullptr;
+    BiTNode*p=(BiTNode*)malloc(sizeof(BiTNode));
+    if(!p)  exit(OVERFLOW); p->data=pre[0];
+    if(length==1){
+        p->lchild=nullptr;
+        p->rchild=nullptr;
+    }else{
+        int i=0;
+        while(in[i]!=p->data)   i++;
+        char *lpre=new char[i], *lin=new char[i];
+        int j=0;
+        while(j<i) { lin[j]=in[j];lpre[j]=pre[j+1];j++;}
+        p->lchild=CreateBiTree(lpre,lin,i);
+        delete[] lpre,lin;
+        char *rpre=new char[length-i-1],*rin=new char[length-i-1];
+        j=i+1;
+        while(j<length){rin[j-i-1]=in[j];rpre[j-i-1]=pre[j];j++;}
+        p->rchild=CreateBiTree(rpre,rin,length-i-1);
+        delete[] rpre,rin;
+    }
+    return p;
+}
+//TODO:6.69
+void PrintBiTree(BiTree T,int i){
+    if(T){
+        PrintBiTree(T->rchild,i+1);
+        for(int j=1;j<i;j++)    printf("  ");
+        printf("%c\n",T->data);
+        PrintBiTree(T->lchild,i+1);
+    }
 }
