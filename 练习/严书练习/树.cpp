@@ -5,7 +5,7 @@
 
 //TODO:二叉树的顺序存储
 //----------------二叉树的顺序存储表示------------------
-typedef int TELemType;
+typedef char TELemType;
 #define MAX_TREE_SIZE 100
 typedef TELemType SqBiTree[MAX_TREE_SIZE];
 //TODO:二叉树的链式存储
@@ -744,6 +744,42 @@ BiTNode* CreateBiTree(char *pre,char *in,int length){
     }
     return p;
 }
+//TODO:树的双亲表存储表示
+//--------------------------树的双亲表存储表示-----------------
+#define MAX_TREE_SIZE 100
+typedef struct PTNode{
+    TELemType data;
+    int parent;
+}PTNode;
+typedef struct PTree{
+    PTNode nodes[MAX_TREE_SIZE];
+    int r,n;
+}PTree;
+//--------------------------------------------------------------------
+//TODO:6.66
+CSTree CreateCSTree(PTree T){
+    if(T.n==0)  return nullptr;
+    CSNode *cnodes=(CSNode*)malloc(sizeof(CSNode)*T.n);
+    if(!cnodes)  exit(OVERFLOW);
+    for(int i=0;i<T.n;i++){
+        cnodes[i].data=T.nodes[i].data;
+        cnodes[i].firstchild=cnodes[i].nextsibling=nullptr;
+    }
+    for(int i=0;i<T.n;i++){
+        if(i!=T.r-1){
+            int p=T.nodes[i].parent;CSNode* f;
+            if(!cnodes[p].firstchild)   cnodes[p].firstchild=&cnodes[i];
+            else{
+                f=cnodes[p].firstchild;
+                while(f->nextsibling!=nullptr){
+                    f=f->nextsibling;
+                }
+                f->nextsibling=&cnodes[i];
+            }
+        }
+    }
+    return &cnodes[T.r-1];
+}
 //TODO:6.69
 void PrintBiTree(BiTree T,int i){
     if(T){
@@ -751,5 +787,14 @@ void PrintBiTree(BiTree T,int i){
         for(int j=1;j<i;j++)    printf("  ");
         printf("%c\n",T->data);
         PrintBiTree(T->lchild,i+1);
+    }
+}
+//TODO:6.71
+void PrintCSTree(CSTree T,int n){
+    if(T){
+        for(int i=0;i<n;i++) printf("  ");
+        printf("%c\n",T->data);
+        PrintCSTree(T->firstchild,n+1);
+        PrintCSTree(T->nextsibling,n);
     }
 }
