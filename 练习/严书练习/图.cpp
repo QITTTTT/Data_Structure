@@ -124,3 +124,119 @@ Status DeleteArc(MGraph &G,VertexType v,VertexType w){
     G.arcs[loc1][loc2].adj=0;
     return OK;
 }
+int FirstAdjVex(MGraph G,VertexType v){
+    int loc1=LocateVex(G,v);
+    int i=0;
+    while(i<G.vexnum&&G.arcs[loc1][i].adj!=1)   i++;
+    if(i==G.vexnum) return -1;
+    return i;
+}
+int NextAdjVex(MGraph G,VertexType v,VertexType w){
+    int loc1=LocateVex(G,v);int loc2=LocateVex(G,w);
+    int i=loc2+1;
+    while(i<G.vexnum&&G.arcs[loc1][i].adj!=1)   i++;
+    if(i==G.vexnum) return -1;
+    return i;
+}
+void Visit(MGraph G,int v){
+    printf("%c",G.vexs[v]);
+}
+//TODO:图的深度优先遍历
+bool visited[MAX_VERTEX_NUM];
+void (*VisitFunc)(MGraph G,int v);
+
+void DFS(MGraph G,int v){
+    visited[v]=true;VisitFunc(G,v);
+    for(int w=FirstAdjVex(G,G.vexs[v]);w>=0;w=NextAdjVex(G,G.vexs[v],G.vexs[w])){
+        if(visited[w]==false)   DFS(G,w);
+    }
+}
+void DFSTraverse(MGraph G,int v){
+    VisitFunc=Visit;
+    for(int i=0;i<G.vexnum;i++) visited[i]=false;
+    for(int i=0;i<G.vexnum;i++){
+        if(!visited[i]) DFS(G,v);
+    }
+}
+//TODO:--单链队列--队列的链式存储结构
+typedef int QElemType;
+typedef struct QNode{
+    QElemType data;
+    struct QNode *next;
+}QNode,*QueuePtr;
+typedef struct{
+    QueuePtr front;
+    QueuePtr rear;
+}LinkQueue;
+//初始化
+Status InitQueue(LinkQueue &Q){
+    Q.front=Q.rear=(QueuePtr)malloc(sizeof(QNode));
+    if(!Q.front)    exit(OVERFLOW);
+    Q.front->next=nullptr;
+    return OK;
+}
+//销毁队列
+Status Destroy(LinkQueue &Q){
+    while(Q.front){
+        Q.rear=Q.front->next;
+        free(Q.front);
+        Q.front=Q.rear;
+    }
+    return OK;
+}
+//插入元素
+Status EnQueue(LinkQueue &Q,QElemType e){
+    QNode*p=(QueuePtr)malloc(sizeof(QNode));
+    if(!p)  return OVERFLOW;
+    p->data=e;p->next=nullptr;
+    Q.rear->next=p;Q.rear=p;
+    return OK;
+}
+//删除队头元素
+Status DeQueue(LinkQueue &Q,QElemType &e){
+    if(Q.front==Q.rear) return false;
+    QueuePtr p=Q.front->next;
+    Q.front->next=p->next;
+    if(p==Q.rear)   Q.rear=Q.front;
+    e=p->data;
+    free(p);
+    return OK;
+}
+//****************************************************************************************
+//****************************************************************************************
+//TODO:图的广度优先遍历
+void BFSTraverse(MGraph G,void(*Visit)(MGraph G,int v)){
+    for(int v=0;v<G.vexnum;v++){
+        visited[v]=false;
+    }
+    LinkQueue Q;InitQueue(Q);
+    for(int v=0;v<G.vexnum;v++){
+        if(!visited[v]){
+            EnQueue(Q,v);
+            while(Q.rear!=Q.front){
+                int w;
+                DeQueue(Q,w);Visit(G,w);visited[w]=true;
+                for(int u=FirstAdjVex(G,w);u>=0;u=NextAdjVex(G,w,u)){
+                    if(!visited[u]) EnQueue(Q,u);
+                }
+            }
+        }
+    }
+
+}
+int main() {
+    MGraph G;
+    // Initialize G...
+    G.vexnum = 3;
+    G.arcnum = 2;
+    G.vexs[0] = 'A';
+    G.vexs[1] = 'B';
+    G.vexs[2] = 'C';
+    G.arcs[0][1].adj = 1;
+    G.arcs[1][2].adj = 1;
+
+    VisitFunc = Visit;
+    BFSTraverse(G,VisitFunc);
+
+    return 0;
+}
