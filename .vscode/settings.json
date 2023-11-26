@@ -49,7 +49,7 @@
         "typeinfo": "cpp"
     },
     "gitdoc.enabled": true,
-    "workbench.editor.enablePreview": false,
+    "workbench.editor.enablePreview": true,
   
   "todo-tree.highlights.customHighlight": {
     "BUG": {
