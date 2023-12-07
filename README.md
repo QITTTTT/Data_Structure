@@ -10,4 +10,4 @@
 
 ## state
 
-tmd，学不完了，fuck！！！！！！:sob:
+tmd，学不完了，fuck！！！！！！ :sob:
