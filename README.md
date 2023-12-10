@@ -11,3 +11,5 @@
 ## state
 
 tmd，学不完了，fuck！！！！！！ :sob:
+
+看的想吐 :vomiting_face:
