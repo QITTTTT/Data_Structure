@@ -224,19 +224,83 @@ void BFSTraverse(MGraph G,void(*Visit)(MGraph G,int v)){
     }
 
 }
-int main() {
-    MGraph G;
-    // Initialize G...
-    G.vexnum = 3;
-    G.arcnum = 2;
-    G.vexs[0] = 'A';
-    G.vexs[1] = 'B';
-    G.vexs[2] = 'C';
-    G.arcs[0][1].adj = 1;
-    G.arcs[1][2].adj = 1;
 
-    VisitFunc = Visit;
-    BFSTraverse(G,VisitFunc);
+#define INF 99999
+#define V 4
 
+void printSolution(int dist[][V], int pred[][V]);
+
+void floydWarshall (int graph[][V])
+{
+    int dist[V][V], i, j, k;
+    int pred[V][V]; // Predecessor matrix
+
+    for (i = 0; i < V; i++)
+        for (j = 0; j < V; j++)
+        {
+            dist[i][j] = graph[i][j];
+            
+            if (graph[i][j] == INF)
+                pred[i][j] = -1;
+            else
+                pred[i][j] = i;
+        }
+
+    for (k = 0; k < V; k++)
+    {
+        for (i = 0; i < V; i++)
+        {
+            for (j = 0; j < V; j++)
+            {
+                if (dist[i][k] + dist[k][j] < dist[i][j])
+                {
+                    dist[i][j] = dist[i][k] + dist[k][j];
+                    pred[i][j] = pred[k][j];
+                }
+            }
+        }
+    }
+
+    printSolution(dist, pred);
+}
+
+void printSolution(int dist[][V], int pred[][V])
+{
+    printf ("Shortest distance matrix\n");
+    for (int i = 0; i < V; i++)
+    {
+        for (int j = 0; j < V; j++)
+        {
+            if (dist[i][j] == INF)
+                printf("%7s", "INF");
+            else
+                printf ("%7d", dist[i][j]);
+        }
+        printf("\n");
+    }
+
+    printf ("Predecessor matrix\n");
+    for (int i = 0; i < V; i++)
+    {
+        for (int j = 0; j < V; j++)
+        {
+            if (pred[i][j] == -1)
+                printf("%7s", "NIL");
+            else
+                printf ("%7d", pred[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+int main()
+{
+    int graph[V][V] = { {0,   INF,  INF, 1},
+                        {INF, 0,   INF, INF},
+                        {INF, 1, 0,   INF},
+                        {INF, INF, 1, 0}
+                      };
+
+    floydWarshall(graph);
     return 0;
 }
